@@ -1,10 +1,6 @@
 var express = require("express");
 var router = express.Router();
 
-// when it is exposed then can protect user account
-const bcrypt = require("bcrypt");
-const saltRounds = 10;
-
 // user can type wrong input
 const { validationResult } = require("express-validator");
 const { validate } = require("../utility/validate");
@@ -51,7 +47,15 @@ router.post("/register", (req, res) => {
 			});
 		}
 
-		if (!(await db.addUser(fields, files))) {
+		let userInfo = await db.addUser(fields, files);
+
+		if (typeof userId === "boolean") {
+			return res.status(400).render("400", { title: "400 Bad Request" });
+		}
+
+		let account = await db.addAccount(userInfo);
+
+		if (!account) {
 			return res.status(400).render("400", { title: "400 Bad Request" });
 		}
 

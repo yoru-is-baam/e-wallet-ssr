@@ -30,12 +30,17 @@ var accountSchema = mongoose.Schema({
 		required: true,
 		default: 0,
 	},
+	role: {
+		type: String,
+		required: true,
+		default: "Customer",
+	},
 	userId: {
 		type: String,
 		required: true,
 	},
 });
 
-var Account = mongoose.model("accounts", userSchema);
+var Account = mongoose.model("accounts", accountSchema);
 
 module.exports = Account;

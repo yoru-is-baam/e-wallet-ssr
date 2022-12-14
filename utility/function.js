@@ -13,10 +13,12 @@ async function uploadId(file) {
 	return pathToUpload;
 }
 
-function generateRandomString(usernameLength = 10) {
-	const chars = "0123456789";
+function generateRandomString(strLength) {
+	const chars = (length = 10
+		? "0123456789"
+		: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 	const randomArray = Array.from(
-		{ length: usernameLength },
+		{ length: strLength },
 		(v, k) => chars[Math.floor(Math.random() * chars.length)]
 	);
 
