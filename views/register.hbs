@@ -1,0 +1,160 @@
+<div class="container">
+  <h3 class="mt-4 mb-3 text-center text-light">Register</h3>
+  <div class="row justify-content-center mt-3">
+    <div class="col-md-6">
+      <form
+        novalidate
+        action="/users/register"
+        class="border p-3 rounded bg-light mb-4"
+        method="post"
+        enctype="multipart/form-data"
+        onsubmit="return checkRegister()"
+      >
+        <input type="hidden" name="_csrf" value="{{csrf}}">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="fas fa-user"></i>
+              </span>
+            </div>
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              placeholder="Enter name"
+              name="name"
+              value="{{name}}"
+            />
+          </div>
+          {{#if errors.name.msg}}
+          <div class="text-danger">{{errors.name.msg}}</div>
+          {{/if}}
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="fas fa-envelope"></i>
+              </span>
+            </div>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              placeholder="Enter email"
+              name="email"
+              value="{{email}}"
+            />
+          </div>
+          {{#if errors.email}}
+          <div class="text-danger">{{errors.email}}</div>
+          {{/if}}
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone number</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="fas fa-phone-square-alt"></i>
+              </span>
+            </div>
+            <input
+              type="number"
+              class="form-control"
+              id="phone"
+              placeholder="Enter number"
+              name="phone"
+              value="{{phone}}"
+            />
+          </div>
+          {{#if errors.phone}}
+          <div class="text-danger">{{errors.phone}}</div>
+          {{/if}}
+        </div>
+        <div class="form-group">
+          <label for="address">Address</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="fas fa-address-book"></i>
+              </span>
+            </div>
+            <input
+              type="text"
+              class="form-control"
+              id="address"
+              placeholder="Enter address"
+              name="address"
+              value="{{address}}"
+            />
+          </div>
+          {{#if errors.address.msg}}
+          <div class="text-danger">{{errors.address.msg}}</div>
+          {{/if}}
+        </div>
+        <div class="form-group">
+          <label for="birthday">Date Of Birth</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="fas fa-birthday-cake"></i>
+              </span>
+            </div>
+            <input
+              type="date"
+              name="date"
+              id="birthday"
+              class="form-control"
+              value="{{date}}"
+            />
+          </div>
+          {{#if errors.date.msg}}
+          <div class="text-danger">{{errors.date.msg}}</div>
+          {{/if}}
+        </div>
+        <hr />
+        <div class="custom-file">
+          <input
+            type="file"
+            class="custom-file-input"
+            id="id-front"
+            name="id-front"
+            onchange="showIdFrontName(this)"
+          />
+          <label class="id custom-file-label" for="id-front"
+            >ID Front</label
+          >
+        </div>
+        <div class="custom-file mt-3 mb-4">
+          <input
+            type="file"
+            class="custom-file-input"
+            id="id-back"
+            name="id-back"
+            onchange="showIdBackName(this)"
+            accept="image/gif, image/jpeg, image/png, image/jpg"
+          />
+          <label class="id custom-file-label" for="id-back">ID Back</label>
+        </div>
+        <div class="text-danger text-center mb-4 d-none" id="error-message">
+          Please enter your name
+        </div>
+        <div class="text-center">
+          <button
+            class="btn btn-primary btn-block"
+            type="submit"
+            class="btn btn-default"
+          >
+            Register
+          </button>
+          <a href="/users/login" class="btn btn-link mt-2" role="button"
+            >Already have an account?
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

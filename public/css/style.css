@@ -1,0 +1,425 @@
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+h3,
+h5 {
+	margin: 0;
+}
+
+body {
+	background: url(/img/background.webp) no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+
+.home__page {
+	color: #ffff;
+	margin-top: 250px;
+}
+
+.home__page h1 {
+	font-size: 100px;
+}
+
+.header {
+	display: flex;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.header h1 {
+	margin-top: 13px;
+	margin-left: 80px;
+	color: #ffff;
+}
+
+.dropdown button {
+	margin-top: 17px;
+	margin-left: 20px;
+	background: none;
+}
+
+.dropleft {
+	display: none;
+}
+
+.dropleft button {
+	margin-top: 17px;
+	margin-left: 20px;
+	background: none;
+}
+
+.dropleft button:hover,
+.dropleft-item:hover {
+	background-color: #c2c2c2;
+}
+
+.dropdown button:hover,
+.dropdown-item:hover {
+	background-color: #c2c2c2;
+}
+
+.navi__list {
+	list-style-type: none;
+	border-right: 1px solid #c2c2c2;
+}
+
+.navi__list i {
+	margin-right: 5px;
+}
+
+.navi__item-1 {
+	margin-top: 40px;
+	margin-left: 65px;
+}
+
+.navi__item-2 {
+	border-radius: 10px;
+	padding: 10px;
+	border-style: none;
+	background: none;
+	color: #ffff;
+	width: 180px;
+	text-align: left;
+}
+
+.navi__item-2:hover {
+	background-color: #c2c2c2;
+	color: black;
+	width: 200px;
+}
+
+.content__recharge,
+.content__ID {
+	color: #ffff;
+	margin-top: 30px;
+	margin-left: 80px;
+	margin-right: 80px;
+	text-align: center;
+	border: 1px solid white;
+	border-radius: 20px;
+	padding: 15px;
+}
+
+.content__recharge .top-money {
+	background: none;
+	border: none;
+	color: #c2c2c2;
+}
+
+.content__recharge .top-money :hover {
+	color: rgb(82, 253, 82);
+}
+
+.content__withdraw,
+.content__transfer {
+	color: #3498db;
+	margin-top: 15px;
+	padding: 30px 20px;
+	background-color: rgb(223, 223, 223);
+	text-align: center;
+	border-radius: 5px;
+}
+
+.content__withdraw [type="text"],
+.content__transfer [type="text"] {
+	display: block;
+	background: none;
+	margin: 0 auto;
+	width: 80%;
+	border: 0;
+	border-bottom: 1px solid #3498db;
+	height: 45px;
+	line-height: 45px;
+	font-size: 1em;
+	color: black;
+}
+
+.content__withdraw [type="date"],
+.content__transfer [type="date"] {
+	display: block;
+	background: none;
+	margin: 0 auto;
+	width: 80%;
+	border: 0;
+	border-bottom: 1px solid #3498db;
+	height: 45px;
+	line-height: 45px;
+	font-size: 1em;
+	color: black;
+}
+
+.content__withdraw [type="submit"],
+.content__transfer [type="submit"] {
+	margin-top: 25px;
+	width: 80%;
+	border: 0;
+	background: #3498db;
+	border-radius: 5px;
+	height: 50px;
+	color: white;
+	font-weight: 400;
+	font-size: 1em;
+}
+
+.content__withdraw [type="text"]:focus,
+.content__withdraw[type="date"]:focus,
+.content__transfer [type="text"]:focus,
+.content__transfer [type="date"]:focus {
+	outline: none;
+	border-color: #3498db;
+}
+
+.content__transfer .pay__fee {
+	margin-right: 40px;
+}
+
+.content__transfer .form-check {
+	margin-right: 20px;
+}
+
+.content__buy-phone-card {
+	color: #ffff;
+	text-align: center;
+	margin-top: 40px;
+}
+
+.content__phone-card .pc-item {
+	margin: 2rem;
+}
+
+.content__card-type {
+	color: #ffff;
+	text-align: center;
+}
+
+.content__card-type .ct-item {
+	color: #ffff;
+	margin: 1rem;
+	text-align: center;
+	border-radius: 10px;
+	background-color: #404344;
+	padding: 7px;
+	border-style: none;
+}
+
+.table {
+	color: #ffff;
+	background-color: #343a40;
+}
+
+.table td,
+.table th {
+	vertical-align: unset;
+}
+
+.responsive__list {
+	display: none;
+}
+
+/* --------------------------------------------- */
+
+@media only screen and (max-width: 63.9375em) {
+	.navi__list {
+		display: none;
+		border-right: none;
+	}
+
+	.responsive__list {
+		margin-top: 40px;
+		display: block;
+		display: flex;
+		flex-wrap: wrap;
+		list-style: none;
+		justify-content: center;
+	}
+
+	.responsive__item-2 {
+		color: #fff;
+	}
+
+	.responsive__item-2:hover {
+		color: rgb(104, 99, 99);
+	}
+}
+
+/* For tablet */
+@media only screen and (min-width: 46.25em) and (max-width: 63.9375em) {
+	.header {
+		justify-content: center;
+	}
+}
+
+/* for mobile */
+@media only screen and (max-width: 46.1875em) {
+	.body {
+		align-items: center;
+	}
+
+	.home__page h1 {
+		font-size: 50px;
+	}
+
+	.modal-body img {
+		display: none;
+	}
+
+	.dropdown {
+		display: none;
+	}
+
+	.dropleft {
+		display: block;
+	}
+
+	.content__transfer .pay__fee {
+		margin-right: 10px;
+	}
+
+	/* Table responsive */
+	table,
+	thead,
+	tbody,
+	th,
+	td,
+	tr {
+		display: block;
+	}
+
+	tbody th {
+		text-align: center;
+	}
+
+	thead tr {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+
+	tr {
+		border: 3px solid #ccc;
+	}
+
+	td {
+		border-bottom: 1px solid #eee;
+		position: relative;
+		text-align: right;
+	}
+
+	td:before {
+		position: absolute;
+		top: 6px;
+		left: 6px;
+		width: 45%;
+		text-align: left;
+		margin-top: 5px;
+		margin-bottom: 5px;
+	}
+
+	/* Transaction History */
+	.content__history td:nth-of-type(1):before {
+		content: "Transaction type";
+	}
+	.content__history td:nth-of-type(2):before {
+		content: "Fee";
+	}
+	.content__history td:nth-of-type(3):before {
+		content: "Execution time";
+	}
+	.content__history td:nth-of-type(4):before {
+		content: "Status";
+	}
+	.content__history td:nth-of-type(5):before {
+		content: "See detail";
+	}
+
+	/* Withdraw */
+	.content__history--withdraw td:nth-of-type(1):before {
+		content: "Withdraw code";
+	}
+	.content__history--withdraw td:nth-of-type(2):before {
+		content: "Transaction Fee";
+	}
+	.content__history--withdraw td:nth-of-type(3):before {
+		content: "Execution time";
+	}
+	.content__history--withdraw td:nth-of-type(4):before {
+		content: "Status";
+	}
+	.content__history--withdraw td:nth-of-type(5):before {
+		content: "Amount withdraw";
+	}
+
+	/* Transfer */
+	.content__history--transfer td:nth-of-type(1):before {
+		content: "Transfer code";
+	}
+	.content__history--transfer td:nth-of-type(2):before {
+		content: "Transaction Fee";
+	}
+	.content__history--transfer td:nth-of-type(3):before {
+		content: "Execution time";
+	}
+	.content__history--transfer td:nth-of-type(4):before {
+		content: "Status";
+	}
+	.content__history--transfer td:nth-of-type(5):before {
+		content: "Transfer amount";
+	}
+	.content__history--transfer td:nth-of-type(6):before {
+		content: "Message";
+	}
+
+	/* Buy phone card */
+	.content__phone-card-infor td:nth-of-type(1):before {
+		content: "Card Code";
+	}
+	.content__phone-card-infor td:nth-of-type(2):before {
+		content: "Transaction Fee";
+	}
+	.content__phone-card-infor td:nth-of-type(3):before {
+		content: "Price";
+	}
+	.content__phone-card-infor td:nth-of-type(4):before {
+		content: "Card Type";
+	}
+
+	/* Receive */
+	.content__history--receive td:nth-of-type(1):before {
+		content: "Receive code";
+	}
+	.content__history--receive td:nth-of-type(2):before {
+		content: "Execution time";
+	}
+	.content__history--receive td:nth-of-type(3):before {
+		content: "Transfer amount";
+	}
+	.content__history--receive td:nth-of-type(4):before {
+		content: "Sender";
+	}
+	.content__history--receive td:nth-of-type(5):before {
+		content: "Message";
+	}
+
+	/* Receive */
+	.content__history--deposit td:nth-of-type(1):before {
+		content: "Deposit code";
+	}
+	.content__history--deposit td:nth-of-type(2):before {
+		content: "Transaction Fee";
+	}
+	.content__history--deposit td:nth-of-type(3):before {
+		content: "Execution time";
+	}
+	.content__history--deposit td:nth-of-type(4):before {
+		content: "Status";
+	}
+	.content__history--deposit td:nth-of-type(5):before {
+		content: "Amount sent";
+	}
+}
