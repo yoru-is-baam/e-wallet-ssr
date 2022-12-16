@@ -12,7 +12,7 @@ async function uploadId(file) {
 	await fs.promises.writeFile(pathToUpload, data);
 	await fs.promises.unlink(oldPath);
 
-	return pathToUpload;
+	return file.newFilename + path.extname(file.originalFilename);
 }
 
 function generateRandomString(strLength) {
@@ -30,8 +30,8 @@ function generateRandomString(strLength) {
 }
 
 async function removeUploadId(idFrontPath, idBackPath) {
-	idFrontPath = "../public/uploads/" + idFrontPath;
-	idBackPath = "../public/uploads/" + idBackPath;
+	idFrontPath = "./public/uploads/" + idFrontPath;
+	idBackPath = "./public/uploads/" + idBackPath;
 
 	try {
 		await fs.promises.unlink(idFrontPath);

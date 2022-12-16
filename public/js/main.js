@@ -186,10 +186,26 @@ function confirmAccount(userId, status) {
 	});
 }
 
-function unlockAccount(username, status) {
-	let url = "locked_display.php?username=" + username + "&status=" + status;
+function unlockAccount(userId, status) {
+	let url = "/admin/blocked_display/" + userId + "/" + status;
 
-	window.location.href = url;
+	$.ajax({
+		url: url,
+		type: "POST",
+		dataType: "json",
+		success: function (data) {
+			if (data.code) {
+				window.location.href = "/admin/admin_system";
+			}
+		},
+		error: function (error) {
+			let data = error.responseJSON;
+
+			if (!data.code) {
+				window.location.href = "/400";
+			}
+		},
+	});
 }
 
 function idValidation() {

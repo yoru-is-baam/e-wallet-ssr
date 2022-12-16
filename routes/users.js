@@ -66,74 +66,77 @@ router.get("/login", validate.redirectIndex, function (req, res) {
 	return res.status(200).render("login", { title: "Login", csrf: token });
 });
 
-router.post("/login", validate.validateLoginUser, async (req, res) => {
-	let username = req.body.username;
-	let password = req.body.password;
+router.post(
+	"/login",
+	validate.validateLoginUser,
+	validate.redirectIndex,
+	async (req, res) => {
+		let username = req.body.username;
+		let password = req.body.password;
 
-	// validation
-	const errors = validationResult(req);
+		// validation
+		const errors = validationResult(req);
 
-	if (!errors.isEmpty()) {
-		return res.status(400).render("login", {
-			title: "Login",
-			csrf: token,
-			...req.body,
-			errors: errors.mapped(),
-		});
-	}
-
-	let checkValidDB = await validate.loginValidationDB(username, password);
-
-	if (typeof checkValidDB === "string") {
-		if (checkValidDB === "Role admin") {
-			req.session.role = "admin";
-			return res.redirect(302, "/admin/admin_system");
+		if (!errors.isEmpty()) {
+			return res.status(400).render("login", {
+				title: "Login",
+				csrf: token,
+				...req.body,
+				errors: errors.mapped(),
+			});
 		}
 
-		return res.status(400).render("login", {
-			title: "Login",
-			csrf: token,
-			...req.body,
-			error: checkValidDB,
-		});
-	} else if (typeof checkValidDB == "boolean" && !checkValidDB) {
-		return res.redirect(400, "/400");
+		let checkValidDB = await validate.loginValidationDB(username, password);
+
+		if (typeof checkValidDB === "string") {
+			if (checkValidDB === "Role admin") {
+				req.session.role = "admin";
+				return res.redirect(302, "/admin/admin_system");
+			}
+
+			return res.status(400).render("login", {
+				title: "Login",
+				csrf: token,
+				...req.body,
+				error: checkValidDB,
+			});
+		} else if (typeof checkValidDB == "boolean" && !checkValidDB) {
+			return res.redirect(400, "/400");
+		}
+
+		//TODO: process login
+		let account = await db.getAccount(username);
+
+		if (account === "") {
+			return res.redirect(302, "/400");
+		}
+
+		// every page need username
+		// instead username use _id should be faster
+		req.session.account = {
+			accountId: account._id,
+			userId: account.userId,
+			role: account.role,
+		};
+
+		if (account.status === "First login") {
+			return res.redirect(302, "/change_password");
+		} else if (account.status === "Wait confirm") {
+			return res.redirect(302, "../not_verify_account");
+		} else if (account.status === "Wait update") {
+			return res.redirect(302, "/users/update_id");
+		} else if (account.status === "Confirm") {
+			return res.redirect(302, "/home");
+		} else if (account.status === "Disabled") {
+			return res.status(400).render("login", {
+				title: "Login",
+				csrf: token,
+				...req.body,
+				error: "This account is disabled, please contact 18001008",
+			});
+		}
 	}
-
-	//TODO: process login
-	let account = await db.getAccount(username);
-
-	if (account === "") {
-		return res.redirect(302, "/400");
-	}
-
-	// every page need username
-	// instead username use _id should be faster
-	req.session.account = {
-		accountId: account._id,
-		userId: account.userId,
-		role: account.role,
-	};
-
-	if (account.status === "First login") {
-		return res.redirect(302, "/change_password");
-	} else if (account.status === "Wait confirm") {
-		return res.redirect(302, "../not_verify_account");
-	} else if (account.status === "Wait update") {
-		return res.redirect(302, "/users/update_id");
-	} else if (account.status === "Confirm") {
-		return res.redirect(302, "/home");
-	} else if (account.status === "Disabled") {
-		return res.status(400).render("login", {
-			title: "Login",
-			csrf: token,
-			...req.body,
-			error: "This account is disabled, please contact 18001008",
-		});
-	}
-
-	return res.json({ ok: "ok" });
-});
+);
 
 // logout
 router.get("/logout", validate.redirectLogin, (req, res) => {

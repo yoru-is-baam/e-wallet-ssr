@@ -1,0 +1,43 @@
+<div class="container">
+  <h2 class="text-center mt-2">User Information</h2>
+  <div class="row justify-content-center">
+    <div class="col-md-6 border p-3 rounded bg-light mb-3">
+      <a href="/admin/admin_system" class="btn btn-light"><i class="fas fa-arrow-left"></i> Go back
+      </a>
+      <div class="text-center mb-5 mt-5">
+        <img src="/img/user.jpg" width="300px" alt="user" />
+      </div>
+      <h5 class="mt-2 ml-4">
+        <i class="fas fa-dot-circle mr-3 center"></i>Blocked Account
+      </h5>
+      {{> user_detail_information name=user.name birth=user.birth email=user.email address=user.address phone=user.phone idFrontPath=user.idFrontPath idBackPath=user.idBackPath}}
+      <div class="decision_unlock text-center mt-2">
+        <button data-toggle="modal" data-target="#unlock" class="btn btn-success mt-2">
+          Unlock
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal unlock -->
+<div class="modal fade" id="unlock" tabindex="-1" role="dialog" aria-labelledby="unlockLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h2>Do you want to unlock this account?</h2>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Disagree
+        </button>
+        <button type="button" class="btn btn-success" onclick="unlockAccount('{{user._id}}', 'Unblock')">Agree</button>
+      </div>
+    </div>
+  </div>
+</div>

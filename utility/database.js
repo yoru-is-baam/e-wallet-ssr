@@ -157,6 +157,21 @@ async function getStatus(accountId) {
 	return "";
 }
 
+async function getUsername(userId) {
+	try {
+		let account = await Account.findOne({ userId: userId });
+
+		if (account) {
+			return account.username;
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "";
+}
+
 async function changePassword(id, password) {
 	try {
 		let hashedPass = await bcrypt.hash(password, saltRounds);
@@ -252,6 +267,39 @@ async function updateId(userId, idFrontPath, idBackPath) {
 	return false;
 }
 
+async function updateWrongCount(username, wrongCount, unusualLogin) {
+	try {
+		let wrongCountIsIncreased = wrongCount + 1;
+		let account = "";
+		const WRONG_COUNT_NOT_ALLOWED = 3;
+
+		if (wrongCountIsIncreased === WRONG_COUNT_NOT_ALLOWED) {
+			account = await Account.findOneAndUpdate(
+				{ username: username },
+				{
+					wrongCount: wrongCountIsIncreased,
+					unusualLogin: true,
+					blockedTime: Date.now(),
+				}
+			);
+		} else {
+			account = await Account.findOneAndUpdate(
+				{ username: username },
+				{ wrongCount: wrongCountIsIncreased }
+			);
+		}
+
+		if (account) {
+			return true;
+		}
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return false;
+}
+
 module.exports = {
 	addUser,
 	addAccount,
@@ -260,5 +308,7 @@ module.exports = {
 	getUser,
 	resetPassword,
 	getStatus,
+	getUsername,
 	updateId,
+	updateWrongCount,
 };

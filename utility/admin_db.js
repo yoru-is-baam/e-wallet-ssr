@@ -1,12 +1,48 @@
 const User = require("../models/user.js");
 const Account = require("../models/account");
 
-async function getWaitConfirmAccount() {
+async function getWaitConfirmAccounts() {
 	try {
 		let waitConfirmAccounts = await Account.find({ status: "Wait confirm" });
 
 		if (waitConfirmAccounts) {
 			return waitConfirmAccounts;
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "";
+}
+
+async function getBlockedAccounts() {
+	try {
+		const WRONG_COUNT_BLOCK_INFINITELY = 6;
+		let blockedAccounts = await Account.find({
+			wrongCount: WRONG_COUNT_BLOCK_INFINITELY,
+			unusualLogin: true,
+		});
+
+		if (blockedAccounts) {
+			return blockedAccounts;
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "";
+}
+
+async function getActiveAccounts() {
+	try {
+		let activeAccounts = await Account.find({
+			status: "Confirm",
+		});
+
+		if (activeAccounts) {
+			return activeAccounts;
 		}
 	} catch (error) {
 		console.error(error);
@@ -34,4 +70,28 @@ async function updateStatus(userId, status) {
 	return false;
 }
 
-module.exports = { getWaitConfirmAccount, updateStatus };
+async function restoreLoginStatus(username) {
+	try {
+		let isRestored = await Account.findOneAndUpdate(
+			{ username: username },
+			{ wrongCount: 0, unusualLogin: false, blockedTime: 0 }
+		);
+
+		if (isRestored) {
+			return true;
+		}
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return false;
+}
+
+module.exports = {
+	getWaitConfirmAccounts,
+	getBlockedAccounts,
+	getActiveAccounts,
+	updateStatus,
+	restoreLoginStatus,
+};

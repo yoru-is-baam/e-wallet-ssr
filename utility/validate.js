@@ -4,6 +4,7 @@ const Account = require("../models/account");
 
 const bcrypt = require("bcrypt");
 const db = require("./database");
+const adminDb = require("./admin_db");
 
 let validateRegisterUser = () => {
 	return [
@@ -62,6 +63,11 @@ let registerValidationDB = async (email, phone) => {
 let loginValidationDB = async (username, password) => {
 	try {
 		let account = await Account.findOne({ username });
+		let currentTime = Date.now();
+		let blockedTime = currentTime - account.blockedTime;
+		const ONE_MINUTE = 60000;
+		const WRONG_COUNT_NOT_ALLOWED = 3;
+		const WRONG_COUNT_BLOCK_INFINITELY = 6;
 
 		if (!account) {
 			return "Do not have this user";
@@ -71,12 +77,38 @@ let loginValidationDB = async (username, password) => {
 			} else {
 				return "Wrong password";
 			}
+		} else if (
+			account.wrongCount === WRONG_COUNT_BLOCK_INFINITELY &&
+			account.unusualLogin
+		) {
+			return "Your account is blocked because wrong many times, please contact administrator";
+		} else if (
+			account.wrongCount >= WRONG_COUNT_NOT_ALLOWED &&
+			blockedTime < ONE_MINUTE
+		) {
+			return "Your account is blocked, please try again after 1 minute";
 		}
 
 		let isMatch = await bcrypt.compare(password, account.password);
 
 		if (!isMatch) {
-			return "Wrong password";
+			let isUpdatedWrongCount = await db.updateWrongCount(
+				username,
+				account.wrongCount,
+				account.unusualLogin
+			);
+
+			if (isUpdatedWrongCount) {
+				return "Wrong password";
+			}
+
+			return false;
+		}
+
+		let isRestored = await adminDb.restoreLoginStatus(username);
+
+		if (!isRestored) {
+			return false;
 		}
 	} catch (error) {
 		console.error(error);
