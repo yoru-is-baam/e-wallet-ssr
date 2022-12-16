@@ -1,0 +1,51 @@
+{{> header}}
+<div class="container-fluid">
+  <div class="row navi">
+    <div class="col-lg-3">
+      {{> menu_not_verify}}
+
+      <!-- Modal information of user -->
+      {{> modal_information_user name=name phone=phone email=email address=address birth=birth}}
+    </div>
+    <div class="col-lg-9">
+      <div class="content">
+        <!-- Money interface and deposit -->
+        <div class="content__recharge bg-dark">
+          <h2>Total Balance</h2>
+          <h3>
+            {{balance}}
+            <button
+              type="button"
+              class="top-money"
+              data-toggle="modal"
+              data-target="#addRecharge"
+              id="deposit"
+              onclick="alertNotification()"
+            >
+              <i class="fad fa-plus-circle"></i>
+            </button>
+          </h3>
+          <div class="content__recharge-infor mt-5">
+            <h2>Account status</h2>
+            <h4 class="text-danger">{{status}}</h4>
+            <button
+              data-toggle="modal"
+              data-target="#infor"
+              class="text-center btn btn-info mb-2 mt-2"
+            >
+              See basic information
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{> menu_responsive_not_verify}}
+</div>
+<script>
+  window.onload = function () {
+    alert(
+      "Please wait 5 minutes. Administrator will verify you. Remember to reload page after 5 minutes"
+    );
+  };
+</script>

@@ -28,9 +28,6 @@
               value="{{name}}"
             />
           </div>
-          {{#if errors.name.msg}}
-          <div class="text-danger">{{errors.name.msg}}</div>
-          {{/if}}
         </div>
         <div class="form-group">
           <label for="email">Email</label>
@@ -49,9 +46,6 @@
               value="{{email}}"
             />
           </div>
-          {{#if errors.email}}
-          <div class="text-danger">{{errors.email}}</div>
-          {{/if}}
         </div>
         <div class="form-group">
           <label for="phone">Phone number</label>
@@ -70,9 +64,6 @@
               value="{{phone}}"
             />
           </div>
-          {{#if errors.phone}}
-          <div class="text-danger">{{errors.phone}}</div>
-          {{/if}}
         </div>
         <div class="form-group">
           <label for="address">Address</label>
@@ -91,9 +82,6 @@
               value="{{address}}"
             />
           </div>
-          {{#if errors.address.msg}}
-          <div class="text-danger">{{errors.address.msg}}</div>
-          {{/if}}
         </div>
         <div class="form-group">
           <label for="birthday">Date Of Birth</label>
@@ -111,9 +99,6 @@
               value="{{date}}"
             />
           </div>
-          {{#if errors.date.msg}}
-          <div class="text-danger">{{errors.date.msg}}</div>
-          {{/if}}
         </div>
         <hr />
         <div class="custom-file">
@@ -142,6 +127,16 @@
         <div class="text-danger text-center mb-4 d-none" id="error-message">
           Please enter your name
         </div>
+        {{#if error}}
+        <div class="form-group">
+          <div class="alert alert-danger alert-dismissible fade show">
+            <button type="button" class="close" data-dismiss="alert">
+              &times;
+            </button>
+            {{error}}
+          </div>
+        </div>
+        {{/if}}
         <div class="text-center">
           <button
             class="btn btn-primary btn-block"

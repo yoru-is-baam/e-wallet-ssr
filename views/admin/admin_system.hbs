@@ -1,0 +1,105 @@
+<div class="admin">
+  <h2 class="text-center text-light mt-3 mb-3">Admin System</h2>
+  <a href="/users/logout" class="btn btn-light mb-3"><i class="fas fa-arrow-left"></i> Log out</a>
+  <div class="row">
+    <div class="col-lg-2">
+      <table class="table admin-system text-center">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Waiting account</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each waitConfirmAccounts}}
+          <tr>
+            <td>
+              <a href="/admin/waiting_display/{{userId}}" class="btn">{{username}}</a>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+    <div class="col-lg-2">
+      <table class="table admin-system text-center">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Activated account</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <a href="/admin/activated_display" class="btn">Jack</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-lg-2">
+      <table class="table admin-system text-center">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Locked indefinitely account</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <a href="/admin/locked_display" class="btn">Jack</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-lg-2">
+      <table class="table admin-system text-center">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Withdraws over 5M</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <a href="/admin/withdraw_over_5m" class="btn">Jack</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-lg-2">
+      <table class="table admin-system text-center">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Transfer over 5M</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <a href="/admin/transfer_over_5m" class="btn">Jack</a>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-lg-2">
+      <table class="table admin-system text-center">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Disabled account</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <a href="/admin/disable_account" class="btn">Jack</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

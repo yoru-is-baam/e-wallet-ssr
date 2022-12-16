@@ -4,7 +4,9 @@ const fs = require("fs");
 async function uploadId(file) {
 	var oldPath = file.filepath;
 	var pathToUpload =
-		"./uploads/" + file.newFilename + path.extname(file.originalFilename);
+		"./public/uploads/" +
+		file.newFilename +
+		path.extname(file.originalFilename);
 
 	let data = await fs.promises.readFile(oldPath);
 	await fs.promises.writeFile(pathToUpload, data);
@@ -27,4 +29,19 @@ function generateRandomString(strLength) {
 	return randomString;
 }
 
-module.exports = { uploadId, generateRandomString };
+async function removeUploadId(idFrontPath, idBackPath) {
+	idFrontPath = "../public/uploads/" + idFrontPath;
+	idBackPath = "../public/uploads/" + idBackPath;
+
+	try {
+		await fs.promises.unlink(idFrontPath);
+		await fs.promises.unlink(idBackPath);
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return true;
+}
+
+module.exports = { uploadId, generateRandomString, removeUploadId };

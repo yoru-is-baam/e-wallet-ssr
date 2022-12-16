@@ -1,0 +1,141 @@
+{{> header}}
+<div class="container-fluid">
+  <div class="row navi">
+    <div class="col-lg-3">
+      {{> menu}}
+      <!-- Modal information of user -->
+      {{> modal_information_user name=name phone=phone email=email address=address birth=birth}}
+    </div>
+    <div class="col-lg-9">
+      <div class="content">
+        <!-- Money interface and deposit -->
+        <div class="content__recharge bg-dark">
+          <h2>Total Balance</h2>
+          <h3>
+            {{balance}}
+            <button
+              type="button"
+              class="top-money"
+              data-toggle="modal"
+              data-target="#addRecharge"
+            >
+              <i class="fad fa-plus-circle"></i>
+            </button>
+          </h3>
+          <div class="content__recharge-infor mt-5">
+            <h2>Account status</h2>
+            <h4 class="text-success">{{status}}</h4>
+            <button
+              data-toggle="modal"
+              data-target="#infor"
+              class="text-center btn btn-info mb-2 mt-2"
+            >
+              See basic information
+            </button>
+          </div>
+        </div>
+        <!-- Modal -->
+        <div
+          class="modal fade"
+          id="addRecharge"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="addRechargeLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog" role="document">
+            <form
+              novalidate
+              action=""
+              method="post"
+              onsubmit="return checkCC()"
+            >
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-infor text-dark" id="addRechargeLabel">
+                    Deposit money from credit card
+                  </h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <img
+                    class="mb-3"
+                    src="/img/cc.jpg"
+                    width="465px"
+                    height="250px"
+                    alt=""
+                  />
+                  <div class="form-group text-dark">
+                    <label for="card-num">Card number</label>
+                    <input
+                      name="card-num"
+                      id="card-num"
+                      type="text"
+                      class="form-control"
+                      placeholder="6 digit"
+                    />
+                  </div>
+                  <div class="form-group text-dark">
+                    <label for="date-expire">Date Expiration</label>
+                    <input
+                      name="date-expire"
+                      id="date-expire"
+                      type="date"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="form-group text-dark">
+                    <label for="cvv">CVV Code</label>
+                    <input
+                      name="cvv"
+                      id="cvv"
+                      type="text"
+                      class="form-control"
+                      placeholder="3 digit"
+                    />
+                  </div>
+                  <div class="form-group text-dark">
+                    <label for="deposit-money">Deposit money</label>
+                    <input
+                      name="deposit-money"
+                      id="deposit-money"
+                      type="text"
+                      class="form-control"
+                      placeholder="Enter your money"
+                    />
+                  </div>
+                  <div
+                    class="text-danger text-center mt-1 mb-1 d-none"
+                    id="error-message"
+                  >
+                    Please enter your card number
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    data-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button type="submit" class="btn btn-success">
+                    Agree
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{> menu_responsive}}
+</div>

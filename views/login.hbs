@@ -23,9 +23,12 @@
                 class="form-control"
                 placeholder="Username"
                 name="username"
-                value=""
+                value="{{username}}"
               />
             </div>
+            {{#if errors.username.msg}}
+            <div class="text-danger">{{errors.username.msg}}</div>
+            {{/if}}
           </div>
           <div class="form-group">
             <label for="password">Password</label>
@@ -41,8 +44,12 @@
                 class="form-control"
                 placeholder="Password"
                 name="password"
+                value="{{password}}"
               />
             </div>
+            {{#if errors.password.msg}}
+            <div class="text-danger">{{errors.password.msg}}</div>
+            {{/if}}
           </div>
           <div class="form-group">
             <div class="custom-control custom-checkbox">

@@ -17,6 +17,11 @@ body {
 	background-size: cover;
 }
 
+i.center {
+	text-align: center;
+	padding: 5px;
+}
+
 .home__page {
 	color: #ffff;
 	margin-top: 250px;

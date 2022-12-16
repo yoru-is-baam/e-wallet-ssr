@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 mt-5 mx-auto p-3 border rounded bg-light">
+      <h4>Log out successfully</h4>
+      <p>Your account has been logged out the system</p>
+      <p>
+        Click <a href="/users/login">here</a> to back login page, or website
+        will be automatically redirected after
+        <span id="counter" class="text-danger"> 5 </span>
+        seconds.
+      </p>
+      <a class="btn btn-success px-5" href="/users/login">Login</a>
+    </div>
+  </div>
+</div>
+<script>
+	let countDown = 5;
+	let id = setInterval(() => {
+		countDown--;
+		if (countDown >= 0) {
+			$("#counter").html(countDown);
+		}
+		if (countDown === -1) {
+			clearInterval(id);
+			window.location.href = "/users/login";
+		}
+	}, 1000);
+</script>

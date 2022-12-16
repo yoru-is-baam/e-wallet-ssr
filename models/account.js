@@ -13,7 +13,7 @@ var accountSchema = mongoose.Schema({
 	status: {
 		type: String,
 		required: true,
-		default: "Wait confirm",
+		default: "First login",
 	},
 	wrongCount: {
 		type: Number,

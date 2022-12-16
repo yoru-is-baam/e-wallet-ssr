@@ -1,0 +1,48 @@
+<div
+  class="modal fade"
+  id="infor"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="inforLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-infor text-dark" id="inforLabel">
+          Your information
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-dark text-light">
+        <div class="name" id="infor-name">
+          <i class="fas fa-user mb-2 center"></i>
+          {{name}}
+        </div>
+        <div class="phone-number" id="infor-phone">
+          <i class="fas fa-phone-alt mb-2 center"></i>
+          {{phone}}
+        </div>
+        <div class="phone-mail" id="infor-mail">
+          <i class="fas fa-envelope mb-2 center"></i>
+          {{email}}
+        </div>
+        <div class="phone-address" id="infor-address">
+          <i class="fas fa-address-book mb-2 center"></i>
+          {{address}}
+        </div>
+        <div class="phone-birthday" id="infor-birthday">
+          <i class="fas fa-birthday-cake center"></i>
+          {{birth}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

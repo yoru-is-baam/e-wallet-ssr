@@ -1,0 +1,131 @@
+<div class="container">
+  <h2 class="text-center mt-2 text-light">User Information</h2>
+  <div class="row justify-content-center">
+    <div class="col-md-6 border p-3 rounded bg-light mb-3">
+      <a href="/admin/admin_system" class="btn btn-light" type="submit"
+        ><i class="fas fa-arrow-left"></i> Go back
+      </a>
+      <div class="text-center mb-5 mt-5">
+        <img src="/img/user.jpg" width="300px" alt="user" />
+      </div>
+      <h5 class="mt-2 ml-4">
+        <i class="fas fa-dot-circle mr-3 center"></i>Waiting for activation
+      </h5>
+      <h5 class="mt-5 ml-4">
+        <i class="fas fa-user mr-3 center"></i
+        >{{user.name}}
+      </h5>
+      <h5 class="mt-5 ml-4">
+        <i class="fas fa-birthday-cake mr-3 center"></i
+        >{{user.birth}}
+      </h5>
+      <h5 class="mt-5 ml-4">
+        <i class="fas fa-envelope mr-3 center"></i
+        >{{user.email}}
+      </h5>
+      <h5 class="mt-5 ml-4">
+        <i class="fas fa-map-marker mr-3 center"></i
+        >{{user.address}}
+      </h5>
+      <h5 class="mt-5 ml-4">
+        <i class="fas fa-phone-alt mr-3 center"></i
+        >{{user.phone}}
+      </h5>
+      <h5 class="mt-5 ml-4">
+        <i class="fas fa-image mr-3 center"></i>
+        <img src="/uploads/{{user.idFrontPath}}" alt="id-front" width="350px" />
+      </h5>
+      <h5 class="mt-5 ml-4">
+        <i class="fas fa-image mr-3 center"></i>
+        <img src="/uploads/{{user.idBackPath}}" alt="id-back" width="350px" />
+      </h5>
+      <div class="decision_verify text-center mt-4">
+        <button
+          data-toggle="modal"
+          data-target="#verify"
+          class="btn btn-success mt-2"
+        >
+          Verify
+        </button>
+        <button
+          data-toggle="modal"
+          data-target="#cancel"
+          class="btn btn-danger mt-2"
+        >
+          Cancel
+        </button>
+        <button class="btn btn-primary mt-2 text-center" onclick="confirmAccount('{{user._id}}', 'Wait update')">
+          Request additional information
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal verification -->
+<div
+  class="modal fade"
+  id="verify"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="verifyLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h2>Do you want to verify this account?</h2>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Disagree
+        </button>
+        <button type="button" class="btn btn-success" onclick="confirmAccount('{{user._id}}', 'Confirm')">Agree</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal cancel -->
+<div
+  class="modal fade"
+  id="cancel"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="cancelLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h2>Do you want to cancel verification?</h2>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Disagree
+        </button>
+        <button type="button" class="btn btn-success" onclick="confirmAccount('{{user._id}}', 'Disabled')">Agree</button>
+      </div>
+    </div>
+  </div>
+</div>

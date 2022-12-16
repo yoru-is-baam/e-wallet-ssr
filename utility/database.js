@@ -1,4 +1,6 @@
+var mongoose = require("mongoose");
 const fn = require("../utility/function");
+const adminDb = require("../utility/admin_db");
 const User = require("../models/user.js");
 const Account = require("../models/account");
 
@@ -123,4 +125,140 @@ async function checkGenerateUsername() {
 	return username;
 }
 
-module.exports = { addUser, addAccount };
+async function getAccount(username) {
+	try {
+		let account = await Account.findOne({ username });
+
+		if (account) {
+			return account;
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "";
+}
+
+async function getStatus(accountId) {
+	try {
+		let account = await Account.findById({
+			_id: new mongoose.Types.ObjectId(accountId),
+		});
+
+		if (account) {
+			return account.status;
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "";
+}
+
+async function changePassword(id, password) {
+	try {
+		let hashedPass = await bcrypt.hash(password, saltRounds);
+		let account = await Account.findByIdAndUpdate(
+			{ _id: new mongoose.Types.ObjectId(id) },
+			{ password: hashedPass, status: "Wait confirm" }
+		);
+
+		if (account) {
+			return true;
+		}
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return false;
+}
+
+async function getUser(userId) {
+	try {
+		let user = await User.findById({
+			_id: new mongoose.Types.ObjectId(userId),
+		});
+
+		if (user) {
+			return user;
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "";
+}
+
+async function resetPassword(oldPassword, newPassword) {
+	try {
+		let accountId = req.session.account.accountId;
+		let account = await Account.findById({
+			_id: new mongoose.Types.ObjectId(accountId),
+		});
+
+		if (account) {
+			let hashedPassword = account.password;
+			let isMatch = await bcrypt.compare(oldPassword, hashedPassword);
+
+			if (isMatch) {
+				let hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
+				let isChanged = await Account.findByIdAndUpdate(
+					{ _id: accountId },
+					{ password: hashedNewPassword }
+				);
+
+				if (isChanged) {
+					return "Password changed";
+				} else {
+					return "";
+				}
+			} else {
+				return "Wrong old password";
+			}
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "";
+}
+
+async function updateId(userId, idFrontPath, idBackPath) {
+	try {
+		let user = await User.findByIdAndUpdate(
+			{ _id: userId },
+			{ idFrontPath: idFrontPath, idBackPath: idBackPath }
+		);
+
+		if (user) {
+			let isUpdated = await adminDb.updateStatus(userId, "Wait confirm");
+
+			if (isUpdated) {
+				return true;
+			}
+
+			return false;
+		}
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return false;
+}
+
+module.exports = {
+	addUser,
+	addAccount,
+	getAccount,
+	changePassword,
+	getUser,
+	resetPassword,
+	getStatus,
+	updateId,
+};

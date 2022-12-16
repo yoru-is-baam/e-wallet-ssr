@@ -160,28 +160,30 @@ function showIdBackName(img) {
 	}
 }
 
-function countingTimeLogOut() {
-	let countDown = 5;
-	let id = setInterval(() => {
-		countDown--;
-		if (countDown >= 0) {
-			$("#counter").html(countDown);
-		}
-		if (countDown === -1) {
-			clearInterval(id);
-			window.location.href = "login.html";
-		}
-	}, 1000);
-}
-
 function alertNotification() {
 	alert("This feature is only available for verified accounts");
 }
 
-function verifiedAccount(username, status) {
-	let url = "waiting_display.php?username=" + username + "&status=" + status;
+function confirmAccount(userId, status) {
+	let url = "/admin/waiting_display/" + userId + "/" + status;
 
-	window.location.href = url;
+	$.ajax({
+		url: url,
+		type: "POST",
+		dataType: "json",
+		success: function (data) {
+			if (data.code) {
+				window.location.href = "/admin/admin_system";
+			}
+		},
+		error: function (error) {
+			let data = error.responseJSON;
+
+			if (!data.code) {
+				window.location.href = "/400";
+			}
+		},
+	});
 }
 
 function unlockAccount(username, status) {
