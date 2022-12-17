@@ -295,7 +295,7 @@ router.post("/change_password_otp", async (req, res) => {
 	req.session.destroy();
 
 	if (isChanged) {
-		return res.redirect(300, "/users/login");
+		return res.redirect(302, "/users/login");
 	}
 
 	return res.redirect(400, "/400");
