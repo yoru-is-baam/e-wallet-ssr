@@ -155,9 +155,12 @@ router.get("/change_password", validate.redirectFirstLogin, (req, res) => {
 		.render("change_password", { title: "Create new password" });
 });
 
-router.post("/change_password", (req, res) => {
+router.post("/change_password", async (req, res) => {
 	let password = req.body.pwd;
-	let isChanged = db.changePassword(req.session.account.accountId, password);
+	let isChanged = await db.changePassword(
+		req.session.account.accountId,
+		password
+	);
 
 	if (isChanged) {
 		return res.redirect(302, "/not_verify_account");
