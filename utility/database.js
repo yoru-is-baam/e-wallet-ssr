@@ -5,6 +5,7 @@ const User = require("../models/user.js");
 const Account = require("../models/account");
 const RechargeHistory = require("../models/rechargeHistory");
 const WithdrawalHistory = require("../models/withdrawalHistory");
+const TransferHistory = require("../models/transferHistory");
 
 require("dotenv").config();
 
@@ -135,7 +136,7 @@ async function sendOtp(email) {
 		let info = await transporter.sendMail({
 			from: '"Administrator 👻" <dtsamsung51@gmail.com>', // sender address
 			to: email, // list of receivers
-			subject: "Your otp to reset password ✔", // Subject line
+			subject: "Your otp ✔", // Subject line
 			text: "Hello, good day. This is your otp", // plain text body
 			html: `<p>OTP: ${otp}</p>`, // html body
 		});
@@ -170,6 +171,23 @@ async function getOtp(email) {
 
 		if (user) {
 			return user.otp;
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "";
+}
+
+async function getOtpFromTransferHistory(transferHistoryId) {
+	try {
+		let transferHistory = await TransferHistory.findById({
+			_id: new mongoose.Types.ObjectId(transferHistoryId),
+		});
+
+		if (transferHistory) {
+			return transferHistory.otp;
 		}
 	} catch (error) {
 		console.error(error);
@@ -342,6 +360,38 @@ async function getAccountId(userId) {
 
 		if (account) {
 			return account._id;
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "";
+}
+
+async function getAccountById(accountId) {
+	try {
+		let account = await Account.findById({
+			_id: new mongoose.Types.ObjectId(accountId),
+		});
+
+		if (account) {
+			return account;
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "";
+}
+
+async function getUserByPhone(phone) {
+	try {
+		let user = await User.findOne({ phone: phone });
+
+		if (user) {
+			return user;
 		}
 	} catch (error) {
 		console.error(error);
@@ -702,6 +752,97 @@ async function getWithdrawalHistories(accountId) {
 	return "";
 }
 
+async function addTransferHistory(
+	accountIdSender,
+	recipientPhone,
+	transferMoney,
+	sidePayFee,
+	note
+) {
+	try {
+		let fee = fn.calculateFee(transferMoney);
+		let status = transferMoney > 5000000 ? "Waiting" : "Typing OTP";
+
+		let transferHistory = new TransferHistory({
+			recipientPhone: recipientPhone,
+			note: note,
+			accountId: accountIdSender,
+			money: transferMoney,
+			sidePayFee: sidePayFee,
+			fee: fee,
+			status: status,
+		});
+
+		let transferHistoryObject = await transferHistory.save();
+
+		if (transferHistoryObject) {
+			let otpTransfer = await getOtpFromTransferHistory(
+				transferHistoryObject._id
+			);
+			if (!otpTransfer) {
+				return false;
+			}
+
+			let accountSender = await getAccountById(accountIdSender);
+			if (!accountSender) {
+				return false;
+			}
+
+			let sender = await getUser(accountSender.userId);
+			if (!sender) {
+				return false;
+			}
+
+			let isSent = await sendOtp(sender.email);
+			if (isSent) {
+				return transferHistoryObject._id;
+			}
+		}
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return false;
+}
+
+async function rejectTransfer(transferHistoryId) {
+	try {
+		let isRejected = await TransferHistory.findByIdAndUpdate(
+			{
+				_id: new mongoose.Types.ObjectId(transferHistoryId),
+			},
+			{ status: "Rejected" }
+		);
+
+		if (isRejected) {
+			return true;
+		}
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return false;
+}
+
+async function getTransferHistory(transferHistoryId) {
+	try {
+		let transferHistory = await TransferHistory.findById({
+			_id: new mongoose.Types.ObjectId(transferHistoryId),
+		});
+
+		if (transferHistory) {
+			return transferHistory;
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "";
+}
+
 module.exports = {
 	addUser,
 	addAccount,
@@ -728,4 +869,9 @@ module.exports = {
 	confirmWithdrawal,
 	getRechargeHistories,
 	getWithdrawalHistories,
+	getUserByPhone,
+	getAccountById,
+	addTransferHistory,
+	getTransferHistory,
+	rejectTransfer,
 };

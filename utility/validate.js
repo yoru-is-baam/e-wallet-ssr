@@ -6,6 +6,7 @@ const Card = require("../models/card");
 const bcrypt = require("bcrypt");
 const db = require("./database");
 const adminDb = require("./admin_db");
+const fn = require("./function");
 
 let validateRegisterUser = () => {
 	return [
@@ -338,6 +339,49 @@ let withdrawalValidation = async (
 	return "OK";
 };
 
+let transferValidation = async (
+	accountId,
+	phone,
+	transferMoney,
+	sidePayFee
+) => {
+	try {
+		let recipient = await db.getUserByPhone(phone);
+		let fee = fn.calculateFee(transferMoney);
+
+		if (!recipient) {
+			return "Do not have this phone number";
+		}
+
+		let accountSender = await db.getAccountById(accountId);
+		let usernameReceiver = await db.getUsername(recipient._id);
+		let accountReceiver = await db.getAccount(usernameReceiver);
+
+		if (!accountSender) {
+			return "";
+		}
+
+		if (accountSender.balance < transferMoney) {
+			return "Do not have enough money to transfer";
+		}
+
+		if (sidePayFee === "receiver") {
+			if (accountReceiver.balance < fee) {
+				return "Receiver does not have enough money to pay fee";
+			}
+		} else {
+			if (accountSender.balance < transferMoney + fee) {
+				return "Do not have enough money to pay fee";
+			}
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "OK";
+};
+
 let emailAndPhoneValidation = async (email, phone) => {
 	try {
 		let user = await User.findOne({ email: email });
@@ -376,6 +420,41 @@ let otpValidation = async (otp, email) => {
 	return false;
 };
 
+let otpTransferValidation = async (otp, transferHistoryId) => {
+	try {
+		let transferHistory = await db.getTransferHistory(transferHistoryId);
+
+		if (transferHistory === "") {
+			return "";
+		}
+
+		const ONE_MINUTE_IN_MILLISECOND = 60000;
+		let otpInTransferHistory = transferHistory.otp;
+		let IS_GREATER_1_MINUTE =
+			Date.now() - transferHistory.time > ONE_MINUTE_IN_MILLISECOND;
+
+		// reject this transfer
+		if (IS_GREATER_1_MINUTE) {
+			let isRejected = await db.rejectTransfer(transferHistoryId);
+
+			if (isRejected) {
+				return "Your time exceeds 1 minutes. You can not do this transfer";
+			}
+
+			return "";
+		}
+
+		if (otp !== otpInTransferHistory) {
+			return "Wrong otp";
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "";
+};
+
 let validate = {
 	validateLoginUser: validateLoginUser,
 	validateRegisterUser: validateRegisterUser,
@@ -385,6 +464,8 @@ let validate = {
 	emailAndPhoneValidation: emailAndPhoneValidation,
 	otpValidation: otpValidation,
 	withdrawalValidation: withdrawalValidation,
+	transferValidation: transferValidation,
+	otpTransferValidation: otpTransferValidation,
 	redirectIndex: redirectIndex,
 	redirectLogin: redirectLogin,
 	redirectBecauseEmail: redirectBecauseEmail,

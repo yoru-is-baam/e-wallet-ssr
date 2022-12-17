@@ -396,9 +396,11 @@ function rechargeMoney() {
 function checkTransfer() {
 	let phoneBox = document.getElementById("phone");
 	let moneyBox = document.getElementById("money-transfer");
+	let noteBox = document.getElementById("note");
 
 	let phone = phoneBox.value.trim();
 	let money = moneyBox.value.trim();
+	let note = noteBox.value.trim();
 
 	let phoneFormat =
 		/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
@@ -409,7 +411,7 @@ function checkTransfer() {
 		phoneBox.focus();
 
 		return false;
-	} else if (money.length == "") {
+	} else if (money === "") {
 		showError("Money can not be empty");
 		moneyBox.focus();
 
@@ -417,6 +419,11 @@ function checkTransfer() {
 	} else if (!moneyFormat.test(money)) {
 		showError("Invalid money");
 		moneyBox.focus();
+
+		return false;
+	} else if (note === "") {
+		showError("Note can not be empty");
+		noteBox.focus();
 
 		return false;
 	} else {

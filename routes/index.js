@@ -153,6 +153,98 @@ router.post("/withdrawal", async (req, res) => {
 	return res.redirect(302, "/400");
 });
 
+// transfer
+router.get("/transfer", validate.redirectLogin, (req, res) => {
+	return res.status(200).render("transfer", { title: "Transfer" });
+});
+
+router.post("/transfer", async (req, res) => {
+	let phone = req.body.phone;
+	let transferMoney = req.body["money-transfer"];
+	let note = req.body.note;
+	let sidePayFee = req.body["pay-fee"];
+
+	let transferValidationStr = await validate.transferValidation(
+		req.session.account.accountId,
+		phone,
+		transferMoney,
+		sidePayFee
+	);
+
+	if (transferValidationStr === "") {
+		return res.redirect(302, "/400");
+	} else if (transferValidationStr !== "OK") {
+		return res.status(400).render("transfer", {
+			title: "Transfer",
+			error: transferValidationStr,
+			phone,
+			transferMoney,
+			note,
+		});
+	}
+
+	let isAddedTransferHistory = await db.addTransferHistory(
+		req.session.account.accountId,
+		phone,
+		transferMoney,
+		sidePayFee,
+		note
+	);
+
+	if (typeof isAddedTransferHistory === "string") {
+		req.session.transferHistory = {
+			transferHistoryId: isAddedTransferHistory,
+			recipientPhone: phone,
+		};
+		return res.redirect(302, "/otp_transfer");
+	} else {
+		return res.redirect(302, "/400");
+	}
+});
+
+// otp transfer
+router.get("/otp_transfer", validate.redirectLogin, async (req, res) => {
+	if (!req.session.transferHistory) {
+		return res.redirect(302, "/home");
+	}
+
+	let recipient = await db.getUserByPhone(
+		req.session.transferHistory.recipientPhone
+	);
+
+	if (!recipient) {
+		return res.redirect(302, "/400");
+	}
+
+	let recipientName = recipient.name;
+
+	return res
+		.status(200)
+		.render("otp_transfer", { title: "OTP transfer", recipientName });
+});
+
+router.post("/otp_transfer", async (req, res) => {
+	let otp = req.body.otp;
+	let transferHistoryId = req.session.transferHistory.transferHistoryId;
+
+	let otpTransferValidationStr = await validate.otpTransferValidation(
+		otp,
+		transferHistoryId
+	);
+	if (otpTransferValidationStr === "") {
+		return res.redirect(302, "/400");
+	} else if (otpTransferValidationStr != "OK") {
+		return res.status(400).render("otp_transfer", {
+			title: "OTP transfer",
+			error: otpTransferValidationStr,
+		});
+	}
+
+	return res.redirect(302, "/home");
+});
+
+// buy phone card
+
 // transaction history
 router.get("/transaction_history", validate.redirectLogin, (req, res) => {
 	return res

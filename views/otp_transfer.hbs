@@ -1,0 +1,70 @@
+{{> header}}
+<div class="container-fluid">
+  <div class="row navi">
+    <div class="col-lg-3">
+      {{> menu}}
+    </div>
+    <div class="col-lg-9">
+      <div class="container">
+        <div class="row justify-content-center mt-5">
+          <div class="col-md-6">
+            <form
+              novalidate
+              onsubmit="return checkOtp()"
+              method="post"
+              class="border p-3 rounded bg-light"
+              action="/otp_transfer"
+            >
+              <h5 class="mt-2 text-success text-center">
+                Please check email and enter your OTP code!
+              </h5>
+              <div class="form-group mt-4">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  placeholder="Receiver name"
+                  name="receiver"
+                  value="{{recipientName}}"
+                  readonly="readonly"
+                />
+              </div>
+              <div class="form-group mt-4">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="otp"
+                  placeholder="Enter your OTP code"
+                  name="otp"
+                />
+              </div>
+              <div
+                class="text-danger text-center mb-2 d-none"
+                id="error-message"
+              >
+                Please enter your otp
+              </div>
+              {{#if error}}
+              <div
+                class="text-danger text-center mb-2"
+                id="error-message"
+              >
+                {{error}}
+              </div>
+              {{/if}}
+              <div class="text-center">
+                <a href="/transfer" class="btn btn-primary mt-2 mb-3">
+                  <i class="fas fa-arrow-left"></i>Go Back
+                </a>
+                <button class="btn btn-success mt-2 mb-3" type="submit">
+                  Enter
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{> menu_responsive}}
+</div>
