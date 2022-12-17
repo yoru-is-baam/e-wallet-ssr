@@ -678,6 +678,23 @@ async function getRechargeHistories(accountId) {
 	return "";
 }
 
+async function getWithdrawalHistories(accountId) {
+	try {
+		let withdrawalHistories = await WithdrawalHistory.find({
+			accountId: accountId,
+		});
+
+		if (withdrawalHistories) {
+			return withdrawalHistories;
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "";
+}
+
 module.exports = {
 	addUser,
 	addAccount,
@@ -703,4 +720,5 @@ module.exports = {
 	addWithdrawalHistory,
 	confirmWithdrawal,
 	getRechargeHistories,
+	getWithdrawalHistories,
 };

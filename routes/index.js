@@ -176,6 +176,22 @@ router.get("/recharge_history", validate.redirectLogin, async (req, res) => {
 	});
 });
 
+// withdrawal history
+router.get("/withdrawal_history", validate.redirectLogin, async (req, res) => {
+	let withdrawalHistories = await db.getWithdrawalHistories(
+		req.session.account.accountId
+	);
+
+	if (withdrawalHistories === "") {
+		return res.redirect(302, "/400");
+	}
+
+	return res.status(200).render("withdrawal_history", {
+		title: "Withdrawal History",
+		withdrawalHistories: withdrawalHistories,
+	});
+});
+
 // 400
 router.get("/400", (req, res) => {
 	return res.status(400).render("400", { title: "400 Bad Request" });
