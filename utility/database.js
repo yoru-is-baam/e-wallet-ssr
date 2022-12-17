@@ -281,9 +281,15 @@ async function changePassword(id, password) {
 
 async function changePasswordByEmail(email, password) {
 	try {
+		let userId = await getUserId(email);
+
+		if (!userId) {
+			return false;
+		}
+
 		let hashedPass = await bcrypt.hash(password, saltRounds);
 		let account = await Account.findOneAndUpdate(
-			{ email: email },
+			{ userId: userId },
 			{ password: hashedPass }
 		);
 
