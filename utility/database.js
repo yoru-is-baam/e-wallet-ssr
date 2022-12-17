@@ -489,7 +489,8 @@ async function subtractBalance(accountId, subtractMoney) {
 			return false;
 		}
 
-		let balance = currBalance - parseInt(subtractMoney);
+		let balance =
+			currBalance - parseInt(subtractMoney) - fn.calculateFee(subtractMoney);
 
 		let account = await Account.findByIdAndUpdate(
 			{

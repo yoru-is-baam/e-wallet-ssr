@@ -64,15 +64,17 @@ let registerValidationDB = async (email, phone) => {
 let loginValidationDB = async (username, password) => {
 	try {
 		let account = await Account.findOne({ username });
+		if (!account) {
+			return "Do not have this user";
+		}
+
 		let currentTime = Date.now();
 		let blockedTime = currentTime - account.blockedTime;
 		const ONE_MINUTE = 60000;
 		const WRONG_COUNT_NOT_ALLOWED = 3;
 		const WRONG_COUNT_BLOCK_INFINITELY = 6;
 
-		if (!account) {
-			return "Do not have this user";
-		} else if (account.role === "Admin") {
+		if (account.role === "Admin") {
 			if (password === account.password) {
 				return "Role admin";
 			} else {
