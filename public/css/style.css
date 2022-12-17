@@ -331,15 +331,9 @@ i.center {
 		content: "Transaction type";
 	}
 	.content__history td:nth-of-type(2):before {
-		content: "Fee";
+		content: "Total transaction";
 	}
 	.content__history td:nth-of-type(3):before {
-		content: "Execution time";
-	}
-	.content__history td:nth-of-type(4):before {
-		content: "Status";
-	}
-	.content__history td:nth-of-type(5):before {
 		content: "See detail";
 	}
 
@@ -411,20 +405,74 @@ i.center {
 		content: "Message";
 	}
 
-	/* Receive */
+	/* Deposit */
 	.content__history--deposit td:nth-of-type(1):before {
 		content: "Deposit code";
 	}
 	.content__history--deposit td:nth-of-type(2):before {
-		content: "Transaction Fee";
-	}
-	.content__history--deposit td:nth-of-type(3):before {
 		content: "Execution time";
 	}
-	.content__history--deposit td:nth-of-type(4):before {
+	.content__history--deposit td:nth-of-type(3):before {
 		content: "Status";
 	}
-	.content__history--deposit td:nth-of-type(5):before {
+	.content__history--deposit td:nth-of-type(4):before {
 		content: "Amount sent";
+	}
+	.content__history--deposit td:nth-of-type(5):before {
+		content: "Credit card";
+	}
+
+	/* Recent history */
+	.content__recent--history td:nth-of-type(1):before {
+		content: "Transaction type";
+	}
+	.content__recent--history td:nth-of-type(2):before {
+		content: "Fee";
+	}
+	.content__recent--history td:nth-of-type(3):before {
+		content: "Execution time";
+	}
+	.content__recent--history td:nth-of-type(4):before {
+		content: "Status";
+	}
+	.content__recent--history td:nth-of-type(5):before {
+		content: "See detail";
+	}
+
+	/* Withdraw over5m */
+	.content_withdraw--over5m td:nth-of-type(1):before {
+		content: "Transaction code";
+	}
+	.content_withdraw--over5m td:nth-of-type(2):before {
+		content: "Fee";
+	}
+	.content_withdraw--over5m td:nth-of-type(3):before {
+		content: "Execution time";
+	}
+	.content_withdraw--over5m td:nth-of-type(4):before {
+		content: "Amount money";
+	}
+	.content_withdraw--over5m td:nth-of-type(5):before {
+		content: "Approve this account";
+	}
+
+	/* Transfer over5m */
+	.content__transfer--over5m td:nth-of-type(1):before {
+		content: "Transfer code";
+	}
+	.content__transfer--over5m td:nth-of-type(2):before {
+		content: "Fee";
+	}
+	.content__transfer--over5m td:nth-of-type(3):before {
+		content: "Execution time";
+	}
+	.content__transfer--over5m td:nth-of-type(4):before {
+		content: "Amount money";
+	}
+	.content__transfer--over5m td:nth-of-type(5):before {
+		content: "Message";
+	}
+	.content__transfer--over5m td:nth-of-type(6):before {
+		content: "Approve this account";
 	}
 }

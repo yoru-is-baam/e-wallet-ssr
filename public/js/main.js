@@ -313,7 +313,7 @@ function checkOtp() {
 
 		return false;
 	} else if (otp.length > 6) {
-		showError("OTP can be greater than 6 characters");
+		showError("OTP can not be greater than 6 characters");
 
 		return false;
 	} else {
@@ -323,7 +323,7 @@ function checkOtp() {
 	}
 }
 
-function checkCC() {
+function rechargeMoney() {
 	let cardNumberBox = document.getElementById("card-num");
 	let dateExpireBox = document.getElementById("date-expire");
 	let cvvBox = document.getElementById("cvv");
@@ -336,43 +336,61 @@ function checkCC() {
 
 	let moneyFormat = /^[0-9]*$/;
 
-	if (!/^[0-9]{1,6}$/.test(cardNumber)) {
-		showError("Card number must be digits");
+	if (!/^[0-9]{6}$/.test(cardNumber)) {
+		showError("Card number must be at least 6 digits");
 		cardNumberBox.focus();
 
-		return false;
-	} else if (!checkDateExpire(dateExpire)) {
+		return;
+	} else if (dateExpire === "") {
 		showError("Invalid date expiration");
 		dateExpireBox.focus();
 
-		return false;
-	} else if (!/^[0-9]{1,3}$/.test(cvv)) {
-		showError("CVV must be digits");
+		return;
+	} else if (!/^[0-9]{3}$/.test(cvv)) {
+		showError("CVV must be at least 3 digits");
 		cvvBox.focus();
 
-		return false;
-	} else if (depositMoney.length == "") {
+		return;
+	} else if (depositMoney == "" || depositMoney <= 0) {
 		showError("Money can not be empty");
 		depositMoneyBox.focus();
 
-		return false;
+		return;
 	} else if (!moneyFormat.test(depositMoney)) {
 		showError("Invalid money");
 		depositMoneyBox.focus();
 
-		return false;
+		return;
 	} else {
 		showError();
 
-		return true;
+		$.ajax({
+			url: "/recharge",
+			type: "POST",
+			data: {
+				cardNumber: cardNumber,
+				expirationDate: dateExpire,
+				cvv: cvv,
+				rechargeMoney: depositMoney,
+			},
+			success: function (data) {
+				if (data.code) {
+					window.location.reload();
+				}
+			},
+			error: function (xhr, status, error) {
+				let data = xhr.responseJSON;
+
+				console.log(data);
+
+				if (data.code === -1) {
+					window.location.href = "/400";
+				} else {
+					showError(data.msg);
+				}
+			},
+		});
 	}
-}
-
-function checkDateExpire(date) {
-	let dateExpire = new Date(date);
-	let today = new Date();
-
-	return dateExpire > today;
 }
 
 function checkTransfer() {
@@ -399,6 +417,65 @@ function checkTransfer() {
 	} else if (!moneyFormat.test(money)) {
 		showError("Invalid money");
 		moneyBox.focus();
+
+		return false;
+	} else {
+		showError();
+
+		return true;
+	}
+}
+
+function checkWithdrawal() {
+	let cardNumberBox = document.getElementById("card-num");
+	let dateExpireBox = document.getElementById("expiration");
+	let cvvBox = document.getElementById("cvv");
+	let withdrawalMoneyBox = document.getElementById("money");
+	let noteBox = document.getElementById("note");
+
+	let cardNumber = cardNumberBox.value.trim();
+	let dateExpire = dateExpireBox.value.trim();
+	let cvv = cvvBox.value.trim();
+	let withdrawalMoney = withdrawalMoneyBox.value.trim();
+	let note = noteBox.value.trim();
+
+	const MULTIPLE_OF_50000 = parseInt(withdrawalMoney) % 50000 === 0;
+
+	let moneyFormat = /^[0-9]*$/;
+
+	if (!/^[0-9]{6}$/.test(cardNumber)) {
+		showError("Card number must be at least 6 digits");
+		cardNumberBox.focus();
+
+		return false;
+	} else if (dateExpire === "") {
+		showError("Invalid date expiration");
+		dateExpireBox.focus();
+
+		return false;
+	} else if (!/^[0-9]{3}$/.test(cvv)) {
+		showError("CVV must be at least 3 digits");
+		cvvBox.focus();
+
+		return false;
+	} else if (withdrawalMoney == "" || withdrawalMoney <= 0) {
+		showError("Money can not be empty");
+		withdrawalMoneyBox.focus();
+
+		return false;
+	} else if (!moneyFormat.test(withdrawalMoney)) {
+		showError("Invalid money");
+		withdrawalMoneyBox.focus();
+
+		return false;
+	} else if (!MULTIPLE_OF_50000) {
+		showError("Money must be multiple of 50000");
+		withdrawalMoneyBox.focus();
+
+		return false;
+	} else if (note === "") {
+		showError("Note can not be empty");
+		noteBox.focus();
 
 		return false;
 	} else {

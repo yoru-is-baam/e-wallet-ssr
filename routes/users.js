@@ -63,6 +63,10 @@ router.post("/register", (req, res) => {
 
 // login
 router.get("/login", validate.redirectIndex, function (req, res) {
+	if (req.session.email) {
+		delete req.session.email;
+	}
+
 	return res.status(200).render("login", { title: "Login", csrf: token });
 });
 
@@ -120,9 +124,9 @@ router.post(
 		};
 
 		if (account.status === "First login") {
-			return res.redirect(302, "/change_password");
+			return res.redirect(302, "/users/change_password");
 		} else if (account.status === "Wait confirm") {
-			return res.redirect(302, "../not_verify_account");
+			return res.redirect(302, "/not_verify_account");
 		} else if (account.status === "Wait update") {
 			return res.redirect(302, "/users/update_id");
 		} else if (account.status === "Confirm") {
@@ -156,7 +160,7 @@ router.post("/change_password", (req, res) => {
 	let isChanged = db.changePassword(req.session.account.accountId, password);
 
 	if (isChanged) {
-		return res.redirect("../not_verify_account");
+		return res.redirect(302, "/not_verify_account");
 	}
 
 	return res.redirect(400, "/400");
@@ -170,7 +174,8 @@ router.get("/reset_password", validate.redirectLogin, (req, res) => {
 router.post("/reset_password", async (req, res) => {
 	let changedStr = await db.resetPassword(
 		req.body["old-pass"],
-		req.body["new-pass"]
+		req.body["new-pass"],
+		req.session.account.accountId
 	);
 
 	if (changedStr === "") {
@@ -218,6 +223,79 @@ router.post("/update_id", (req, res) => {
 
 		return res.redirect(302, "/400");
 	});
+});
+
+// forgot password
+router.get("/forgot_password", validate.redirectIndex, (req, res) => {
+	return res
+		.status(200)
+		.render("forgot_password", { title: "Forgot password" });
+});
+
+router.post("/forgot_password", async (req, res) => {
+	let email = req.body.email;
+	let phone = req.body.phone;
+
+	let isMatch = await validate.emailAndPhoneValidation(email, phone);
+
+	if (!isMatch) {
+		return res.status(400).render("forgot_password", {
+			title: "Forgot password",
+			email,
+			phone,
+			error: "Do not have this email or phone",
+		});
+	}
+
+	let isSent = await db.sendOtp(email);
+
+	if (isSent) {
+		req.session.email = email;
+		return res.redirect(302, "/users/type_otp");
+	}
+
+	return res.redirect(302, "/400");
+});
+
+// type otp
+router.get("/type_otp", validate.redirectBecauseEmail, (req, res) => {
+	return res.status(200).render("type_otp", { title: "Type OTP" });
+});
+
+router.post("/type_otp", async (req, res) => {
+	let otp = req.body.otp;
+	let email = req.session.email;
+
+	let isMatchOtp = await validate.otpValidation(otp, email);
+	if (!isMatchOtp) {
+		return res.redirect(302, "/400");
+	}
+
+	return res.redirect(302, "/users/change_password_otp");
+});
+
+// change pwd otp
+router.get(
+	"/change_password_otp",
+	validate.redirectBecauseEmail,
+	(req, res) => {
+		return res
+			.status(200)
+			.render("change_password_otp", { title: "Change password" });
+	}
+);
+
+router.post("/change_password_otp", async (req, res) => {
+	let password = req.body.pwd;
+	let isChanged = await db.changePasswordByEmail(req.session.email, password);
+
+	req.session.destroy();
+
+	if (isChanged) {
+		return res.redirect(300, "/users/login");
+	}
+
+	return res.redirect(400, "/400");
 });
 
 module.exports = router;

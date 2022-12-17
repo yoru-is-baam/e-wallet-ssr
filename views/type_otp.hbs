@@ -1,0 +1,20 @@
+<div class="container">
+  <h3 class="mt-5 mb-3 text-center text-light">OTP Code</h3>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form class="border p-3 rounded bg-light" onsubmit="return checkOtp()" action="/users/type_otp" method="post">
+        <div class="form-group mt-3">
+          <input type="text" class="form-control" id="otp" placeholder="Enter your OTP code" name="otp" value="{{otp}}">
+        </div>
+        <div class="text-danger text-center mb-2 d-none" id="error-message">Please enter your otp</div>
+        {{#if error}}
+        <div class="text-danger text-center mb-2" id="error-message">{{otp}}</div>
+        {{/if}}
+        <div class="text-center">
+          <a href="/users/login" class="btn btn-primary">Back to login</a>
+          <button class="btn btn-success mt-2 mb-2" type="submit">Reset</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

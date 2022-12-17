@@ -1,4 +1,5 @@
 var mongoose = require("mongoose");
+var fn = require("../utility/function");
 
 var userSchema = mongoose.Schema({
 	phone: {
@@ -30,6 +31,11 @@ var userSchema = mongoose.Schema({
 	idBackPath: {
 		type: String,
 		required: true,
+	},
+	otp: {
+		type: String,
+		required: true,
+		default: fn.generateOtp(6),
 	},
 });
 

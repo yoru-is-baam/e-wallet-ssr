@@ -1,0 +1,35 @@
+{{> header}}
+<div class="container-fluid">
+  <div class="row navi">
+    <div class="col-lg-3">
+      {{> menu}}
+    </div>
+    <div class="col-lg-9">
+      <div class="content">
+        <!-- Withdraw -->
+        <div class="content__withdraw">
+          <h2>Withdraw</h2>
+          <form novalidate onsubmit="return checkWithdrawal()" action="/withdrawal" method="post">
+            <input type="text" value="{{cardNumber}}" name="card-num" id="card-num" placeholder="Card number" required="" />
+            <input class="mt-3" type="date" name="expiration" id="expiration" placeholder="Date expiration" required="" value="{{expirationDate}}" />
+            <input class="mt-3" type="text" name="cvv" id="cvv" placeholder="CVV" required="" value="{{cvv}}"/>
+            <input class="mt-3" type="text" name="money" id="money" placeholder="Amount of money" required="" value="{{withdrawalMoney}}"/>
+            <div class="form-group mt-4 mb-0 text-left">
+              <textarea class="form-control" name="note" placeholder="Note..." id="note" rows="3">{{note}}</textarea>
+            </div>
+            <div class="text-danger text-center mt-4 d-none" id="error-message">
+              Please enter your name
+            </div>
+            {{#if error}}
+            <div class="text-danger text-center mt-4" id="error-message">
+              {{error}}
+            </div>
+            {{/if}}
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{> menu_responsive}}
+</div>

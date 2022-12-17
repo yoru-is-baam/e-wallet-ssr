@@ -52,6 +52,23 @@ async function getActiveAccounts() {
 	return "";
 }
 
+async function getDisabledAccounts() {
+	try {
+		let disabledAccounts = await Account.find({
+			status: "Disabled",
+		});
+
+		if (disabledAccounts) {
+			return disabledAccounts;
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "";
+}
+
 async function updateStatus(userId, status) {
 	try {
 		let account = await Account.findOneAndUpdate(
@@ -92,6 +109,7 @@ module.exports = {
 	getWaitConfirmAccounts,
 	getBlockedAccounts,
 	getActiveAccounts,
+	getDisabledAccounts,
 	updateStatus,
 	restoreLoginStatus,
 };

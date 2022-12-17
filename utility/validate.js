@@ -1,6 +1,7 @@
 const { body } = require("express-validator");
 const User = require("../models/user.js");
 const Account = require("../models/account");
+const Card = require("../models/card");
 
 const bcrypt = require("bcrypt");
 const db = require("./database");
@@ -186,6 +187,18 @@ let redirectUpdateId = async (req, res, next) => {
 	return res.redirect("/users/login");
 };
 
+let redirectBecauseEmail = async (req, res, next) => {
+	if (req.session.email) {
+		return next();
+	}
+
+	if (req.session.account) {
+		return res.redirect(302, "/home");
+	}
+
+	return res.redirect(302, "/users/login");
+};
+
 let redirectIndex = async (req, res, next) => {
 	if (req.session.account) {
 		let status = await db.getStatus(req.session.account.accountId);
@@ -216,13 +229,154 @@ let adminOnly = (req, res, next) => {
 	next();
 };
 
+let rechargeCardValidation = async (
+	cardNumber,
+	expirationDate,
+	cvv,
+	rechargeMoney
+) => {
+	try {
+		let card = await Card.findOne({ cardNumber: cardNumber });
+		const ONE_MILLION_ONE_RECHARGE = 1000000;
+
+		if (!card) {
+			return "This card is not supported";
+		}
+
+		let expirationDateInDB = card.expirationDate;
+		let cvvInDB = card.cvv;
+
+		if (expirationDate !== expirationDateInDB) {
+			return "Wrong expiration date";
+		}
+
+		if (cvv !== cvvInDB) {
+			return "Wrong cvv";
+		}
+
+		if (cardNumber === "222222" && rechargeMoney > ONE_MILLION_ONE_RECHARGE) {
+			return "This card can just recharge 1 million/1 time";
+		}
+
+		if (cardNumber === "333333") {
+			return "This card is out of money";
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "OK";
+};
+
+let withdrawalValidation = async (
+	accountId,
+	cardNumber,
+	expirationDate,
+	cvv
+) => {
+	try {
+		let withdrawalCount = await db.getWithdrawalCount(accountId);
+		let withdrawalTime = await db.getWithdrawalTime(accountId);
+
+		if (withdrawalCount === "" || withdrawalTime === "") {
+			return "";
+		}
+
+		const WITHDRAWAL_COUNT_ALLOW = 2;
+		const ONE_DAY_MILLISECOND = 8.64e7;
+		let IS_ENOUGH_24_HOURS =
+			Date.now() - withdrawalTime === ONE_DAY_MILLISECOND;
+
+		if (IS_ENOUGH_24_HOURS) {
+			let isRestoredWithdrawalCount = await db.restoreWithdrawalCount(
+				accountId
+			);
+
+			if (!isRestoredWithdrawalCount) {
+				return "";
+			}
+		}
+
+		if (withdrawalCount > WITHDRAWAL_COUNT_ALLOW) {
+			return "You can just withdraw 2 times/1 day";
+		}
+
+		let card = await Card.findOne({ cardNumber: cardNumber });
+
+		if (card) {
+			if (card.cardNumber !== "111111") {
+				return "This card can not use to withdraw";
+			}
+
+			if (card.expirationDate !== expirationDate) {
+				return "Wrong expiration date";
+			}
+
+			if (card.cvv !== cvv) {
+				return "Wrong cvv";
+			}
+		} else {
+			return "This card is not supported";
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "OK";
+};
+
+let emailAndPhoneValidation = async (email, phone) => {
+	try {
+		let user = await User.findOne({ email: email });
+
+		if (user) {
+			if (user.phone === phone) {
+				return true;
+			}
+		}
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return false;
+};
+
+let otpValidation = async (otp, email) => {
+	try {
+		let user = await User.findOne({ email: email });
+
+		if (user) {
+			if (user.otp === otp) {
+				let isUpdatedOtp = await db.updateOtp(email);
+
+				if (isUpdatedOtp) {
+					return true;
+				}
+			}
+		}
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return false;
+};
+
 let validate = {
 	validateLoginUser: validateLoginUser,
 	validateRegisterUser: validateRegisterUser,
 	loginValidationDB: loginValidationDB,
 	registerValidationDB: registerValidationDB,
+	rechargeCardValidation: rechargeCardValidation,
+	emailAndPhoneValidation: emailAndPhoneValidation,
+	otpValidation: otpValidation,
+	withdrawalValidation: withdrawalValidation,
 	redirectIndex: redirectIndex,
 	redirectLogin: redirectLogin,
+	redirectBecauseEmail: redirectBecauseEmail,
 	redirectNotVerifyAccount: redirectNotVerifyAccount,
 	redirectFirstLogin: redirectFirstLogin,
 	redirectUpdateId: redirectUpdateId,

@@ -9,12 +9,14 @@ router.get("/admin_system", validate.adminOnly, async (req, res) => {
 	let waitConfirmAccounts = await adminDb.getWaitConfirmAccounts();
 	let blockedAccounts = await adminDb.getBlockedAccounts();
 	let activeAccounts = await adminDb.getActiveAccounts();
+	let disabledAccounts = await adminDb.getDisabledAccounts();
 
 	return res.status(200).render("./admin/admin_system", {
 		title: "Admin system",
 		waitConfirmAccounts: waitConfirmAccounts,
 		blockedAccounts: blockedAccounts,
 		activeAccounts: activeAccounts,
+		disabledAccounts: disabledAccounts,
 	});
 });
 

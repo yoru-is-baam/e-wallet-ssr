@@ -29,6 +29,18 @@ function generateRandomString(strLength) {
 	return randomString;
 }
 
+function generateOtp(strLength) {
+	const chars = "0123456789";
+	const randomArray = Array.from(
+		{ length: strLength },
+		(v, k) => chars[Math.floor(Math.random() * chars.length)]
+	);
+
+	const randomString = randomArray.join("");
+
+	return randomString;
+}
+
 async function removeUploadId(idFrontPath, idBackPath) {
 	idFrontPath = "./public/uploads/" + idFrontPath;
 	idBackPath = "./public/uploads/" + idBackPath;
@@ -44,4 +56,14 @@ async function removeUploadId(idFrontPath, idBackPath) {
 	return true;
 }
 
-module.exports = { uploadId, generateRandomString, removeUploadId };
+function formatCurrency(money) {
+	return money.toLocaleString("it-IT", { style: "currency", currency: "VND" });
+}
+
+module.exports = {
+	uploadId,
+	generateRandomString,
+	removeUploadId,
+	formatCurrency,
+	generateOtp,
+};

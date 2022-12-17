@@ -97,11 +97,13 @@
           </tr>
         </thead>
         <tbody>
+          {{#each disabledAccounts}}
           <tr>
             <td>
-              <a href="/admin/disable_account" class="btn">Jack</a>
+              <a href="/admin/disable_account/{{userId}}" class="btn">{{username}}</a>
             </td>
           </tr>
+          {{/each}}
         </tbody>
       </table>
     </div>
