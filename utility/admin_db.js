@@ -1,5 +1,7 @@
+var mongoose = require("mongoose");
 const User = require("../models/user.js");
 const Account = require("../models/account");
+const WithdrawalHistory = require("../models/withdrawalHistory");
 
 async function getWaitConfirmAccounts() {
 	try {
@@ -87,6 +89,74 @@ async function updateStatus(userId, status) {
 	return false;
 }
 
+async function getWithdrawalOver5mAccounts() {
+	try {
+		let withdrawalOver5mHistories = await WithdrawalHistory.find({
+			status: "Waiting",
+		});
+
+		if (!withdrawalOver5mHistories) {
+			return "";
+		}
+
+		let accountIds = [];
+		withdrawalOver5mHistories.forEach((withdrawalOver5mHistory) => {
+			accountIds.push(withdrawalOver5mHistory.accountId);
+		});
+
+		let accounts = [];
+
+		for (let i = 0; i < accountIds.length; i++) {
+			let account = await getAccountById(accountIds[i]);
+
+			if (account === "") {
+				return "";
+			}
+
+			accounts.push(account);
+		}
+
+		return accounts;
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+}
+
+async function getWithdrawalOver5mHistory(accountId) {
+	try {
+		let withdrawalOver5mHistory = await WithdrawalHistory.findOne({
+			status: "Waiting",
+		});
+
+		if (withdrawalOver5mHistory) {
+			return withdrawalOver5mHistory;
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "";
+}
+
+async function getAccountById(accountId) {
+	try {
+		let account = await Account.findById({
+			_id: new mongoose.Types.ObjectId(accountId),
+		});
+
+		if (account) {
+			return account;
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "";
+}
+
 async function restoreLoginStatus(username) {
 	try {
 		let isRestored = await Account.findOneAndUpdate(
@@ -112,4 +182,6 @@ module.exports = {
 	getDisabledAccounts,
 	updateStatus,
 	restoreLoginStatus,
+	getWithdrawalOver5mAccounts,
+	getWithdrawalOver5mHistory,
 };

@@ -2,7 +2,7 @@
   <h2 class="text-center text-light mt-3 mb-3">Admin System</h2>
   <a href="/users/logout" class="btn btn-light mb-3"><i class="fas fa-arrow-left"></i> Log out</a>
   <div class="row">
-    <div class="col-lg-2">
+    <div class="col-lg-2 admin__waiting">
       <table class="table bg-light table-hover admin-system text-center">
         <thead class="thead-dark">
           <tr>
@@ -20,7 +20,7 @@
         </tbody>
       </table>
     </div>
-    <div class="col-lg-2">
+    <div class="col-lg-2 admin__actived">
       <table class="table bg-light table-hover admin-system text-center">
         <thead class="thead-dark">
           <tr>
@@ -38,7 +38,7 @@
         </tbody>
       </table>
     </div>
-    <div class="col-lg-2">
+    <div class="col-lg-2 admin__locked">
       <table class="table bg-light table-hover admin-system text-center">
         <thead class="thead-dark">
           <tr>
@@ -56,7 +56,7 @@
         </tbody>
       </table>
     </div>
-    <div class="col-lg-2">
+    <div class="col-lg-2 admin__withdrawOver5m">
       <table class="table bg-light table-hover admin-system text-center">
         <thead class="thead-dark">
           <tr>
@@ -64,15 +64,17 @@
           </tr>
         </thead>
         <tbody>
+          {{#each withdrawalOver5mAccounts}}
           <tr>
             <td>
-              <a href="/admin/withdraw_over_5m" class="btn">Jack</a>
+              <a href="/admin/withdraw_over_5m/{{_id}}" class="btn">{{username}}</a>
             </td>
           </tr>
+          {{/each}}
         </tbody>
       </table>
     </div>
-    <div class="col-lg-2">
+    <div class="col-lg-2 admin__transferOver5m">
       <table class="table bg-light table-hover admin-system text-center">
         <thead class="thead-dark">
           <tr>
@@ -89,7 +91,7 @@
         </tbody>
       </table>
     </div>
-    <div class="col-lg-2">
+    <div class="col-lg-2 admin__disabled">
       <table class="table bg-light table-hover admin-system text-center">
         <thead class="thead-dark">
           <tr>

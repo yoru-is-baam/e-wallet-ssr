@@ -4,6 +4,7 @@ const adminDb = require("../utility/admin_db");
 const User = require("../models/user.js");
 const Account = require("../models/account");
 const RechargeHistory = require("../models/rechargeHistory");
+const WithdrawalHistory = require("../models/withdrawalHistory");
 
 require("dotenv").config();
 
@@ -480,6 +481,54 @@ async function updateBalance(accountId, newBalance) {
 	return false;
 }
 
+async function subtractBalance(accountId, subtractMoney) {
+	try {
+		let currBalance = await getBalance(accountId);
+
+		if (currBalance === "") {
+			return false;
+		}
+
+		let balance = currBalance - parseInt(subtractMoney);
+
+		let account = await Account.findByIdAndUpdate(
+			{
+				_id: new mongoose.Types.ObjectId(accountId),
+			},
+			{ balance: balance }
+		);
+
+		if (account) {
+			return true;
+		}
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return false;
+}
+
+async function updateWithdrawalCount(accountId) {
+	try {
+		let currWithdrawalCount = await getWithdrawalCount(accountId);
+
+		let isUpdated = await Account.findByIdAndUpdate(
+			{ _id: new mongoose.Types.ObjectId(accountId) },
+			{ withdrawalCount: currWithdrawalCount + 1 }
+		);
+
+		if (isUpdated) {
+			return true;
+		}
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return false;
+}
+
 async function addRechargeHistory(accountId, cardNumber, money) {
 	try {
 		let rechargeHistory = new RechargeHistory({
@@ -491,6 +540,45 @@ async function addRechargeHistory(accountId, cardNumber, money) {
 		let isAdded = await rechargeHistory.save();
 
 		if (isAdded) {
+			return true;
+		}
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return false;
+}
+
+async function addWithdrawalHistory(accountId, cardNumber, money, note) {
+	try {
+		let fee = fn.calculateFee(money);
+		let status = money > 5000000 ? "Waiting" : "Success";
+
+		let withdrawalHistory = new WithdrawalHistory({
+			accountId: accountId,
+			cardNumber: cardNumber,
+			money: money,
+			note: note,
+			fee: fee,
+			status: status,
+		});
+
+		let isAdded = await withdrawalHistory.save();
+
+		if (isAdded) {
+			if (money <= 5000000) {
+				let isSubtracted = await subtractBalance(accountId, money);
+
+				if (isSubtracted) {
+					let isUpdatedWithdrawalCount = await updateWithdrawalCount(accountId);
+
+					if (isUpdatedWithdrawalCount) {
+						return true;
+					}
+				}
+			}
+
 			return true;
 		}
 	} catch (error) {
@@ -537,6 +625,59 @@ async function restoreWithdrawalCount(accountId) {
 	return false;
 }
 
+async function confirmWithdrawal(withdrawalId, accountId, status) {
+	try {
+		let withdrawal = await WithdrawalHistory.findByIdAndUpdate(
+			{ _id: new mongoose.Types.ObjectId(withdrawalId) },
+			{ status: status }
+		);
+
+		if (withdrawal) {
+			let money = withdrawal.money;
+
+			if (status === "Approve") {
+				let isSubtracted = await subtractBalance(accountId, money);
+
+				if (isSubtracted) {
+					let isUpdatedWithdrawalCount = await updateWithdrawalCount(accountId);
+
+					if (isUpdatedWithdrawalCount) {
+						return true;
+					} else {
+						return false;
+					}
+				} else {
+					return false;
+				}
+			}
+
+			return true;
+		}
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return false;
+}
+
+async function getRechargeHistories(accountId) {
+	try {
+		let rechargeHistories = await RechargeHistory.find({
+			accountId: accountId,
+		});
+
+		if (rechargeHistories) {
+			return rechargeHistories;
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "";
+}
+
 module.exports = {
 	addUser,
 	addAccount,
@@ -559,4 +700,7 @@ module.exports = {
 	getWithdrawalCount,
 	getWithdrawalTime,
 	restoreWithdrawalCount,
+	addWithdrawalHistory,
+	confirmWithdrawal,
+	getRechargeHistories,
 };

@@ -1,0 +1,122 @@
+<div class="container-fluid">
+  <div class="content">
+    <!-- Withdraw History -->
+    <div class="content_withdraw--over5m text-center">
+      <h2 class="text-center mt-4 text-light">Withdraw history over 5,000,000đ</h2>
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Account ID</th>
+            <th scope="col">Card Number</th>
+            <th scope="col">Fee</th>
+            <th scope="col">Execution time</th>
+            <th scope="col">Amount withdraw</th>
+            <th scope="col">Approve this account?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">{{withdrawalHistory.accountId}}</th>
+            <td>{{withdrawalHistory.cardNumber}}</td>
+            <td>{{withdrawalHistory.fee}}</td>
+            <td>{{withdrawalHistory.date}}</td>
+            <td>{{withdrawalHistory.money}}</td>
+            <td>
+              <button
+                data-toggle="modal"
+                data-target="#withdraw-agree"
+                class="btn btn-success"
+              >
+                Agree
+              </button>
+              <button
+                data-toggle="modal"
+                data-target="#withdraw-disagree"
+                class="btn btn-danger"
+              >
+                Disagree
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <a href="/admin/admin_system" class="btn btn-light"><i class="fas fa-arrow-left"></i> Go back</a>
+    </div>
+
+    <!-- Modal agree -->
+    <div
+      class="modal fade"
+      id="withdraw-agree"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="withdraw-agreeLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <h2>Do you want to approve this account?</h2>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button type="button" class="btn btn-success" onclick="confirmWithdrawal('{{withdrawalHistory.id}}', '{{withdrawalHistory.accountId}}', 'Approve')">Approve</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal disagree -->
+    <div
+      class="modal fade"
+      id="withdraw-disagree"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="withdraw-disagreeLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <h2>Do you want to disapprove verification?</h2>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button type="button" class="btn btn-success" onclick="confirmWithdrawal('{{withdrawalHistory.id}}', '{{withdrawalHistory.accountId}}', 'Disapprove')">Disapprove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

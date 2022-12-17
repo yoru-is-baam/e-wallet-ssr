@@ -26,6 +26,9 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
 
 hbs.registerPartials(__dirname + "/views/partials");
+hbs.registerHelper("formatCurrency", function (money) {
+	return money.toLocaleString("it-IT", { style: "currency", currency: "VND" });
+});
 
 // app.use(function (req, res, next) {
 // 	res.locals.error = req.session.error;

@@ -1,0 +1,53 @@
+{{> header}}
+<div class="container-fluid">
+  <div class="row navi">
+    <div class="col-lg-3">
+      {{> menu}}
+    </div>
+    <div class="col-lg-9">
+      <div class="content">
+        <!-- Transaction History -->
+        <div class="content__history text-center">
+          <h2 class="text-center text-light">
+            Your transaction history
+          </h2>
+          <table class="table text-light">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Transaction type</th>
+                <th scope="col">See detail</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="withdrawal">
+                <td>Withdraw</td>
+                <td>
+                  <a href="/withdrawal_history_detail" class="btn text-light" type="submit">Detail information</a>
+                </td>
+              </tr>
+              <tr class="transfer">
+                <td>Transfer</td>
+                <td>
+                  <a href="/transfer_history_detail" class="btn text-light" type="submit">Detail information</a>
+                </td>
+              </tr>
+              <tr class="buy-phone-card">
+                <td>Buy phone card</td>
+                <td>
+                  <a href="/card_information" class="btn text-light" type="submit">Detail information</a>
+                </td>
+              </tr>
+              <tr class="deposit">
+                <td>Recharge</td>
+                <td>
+                  <a href="/recharge_history" class="btn text-light" type="submit">Detail information</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{> menu_responsive}}
+</div>

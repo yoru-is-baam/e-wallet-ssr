@@ -121,7 +121,8 @@ router.post("/withdrawal", async (req, res) => {
 		req.session.account.accountId,
 		cardNumber,
 		expirationDate,
-		cvv
+		cvv,
+		withdrawalMoney
 	);
 
 	if (withdrawalValidationStr === "") {
@@ -138,7 +139,41 @@ router.post("/withdrawal", async (req, res) => {
 		});
 	}
 
-	return res.redirect(302, "/home");
+	let isAddedWithdrawalHistory = await db.addWithdrawalHistory(
+		req.session.account.accountId,
+		cardNumber,
+		withdrawalMoney,
+		note
+	);
+
+	if (isAddedWithdrawalHistory) {
+		return res.redirect(302, "/home");
+	}
+
+	return res.redirect(302, "/400");
+});
+
+// transaction history
+router.get("/transaction_history", validate.redirectLogin, (req, res) => {
+	return res
+		.status(200)
+		.render("transaction_history", { title: "Transaction History" });
+});
+
+// recharge history
+router.get("/recharge_history", validate.redirectLogin, async (req, res) => {
+	let rechargeHistories = await db.getRechargeHistories(
+		req.session.account.accountId
+	);
+
+	if (rechargeHistories === "") {
+		return res.redirect(302, "/400");
+	}
+
+	return res.status(200).render("recharge_history", {
+		title: "Recharge History",
+		rechargeHistories: rechargeHistories,
+	});
 });
 
 // 400

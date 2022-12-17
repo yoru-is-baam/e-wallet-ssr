@@ -484,3 +484,29 @@ function checkWithdrawal() {
 		return true;
 	}
 }
+
+function confirmWithdrawal(withdrawalId, accountId, status) {
+	$.ajax({
+		url: "/admin/confirm_withdrawal",
+		type: "POST",
+		data: {
+			withdrawalId: withdrawalId,
+			accountId: accountId,
+			status: status,
+		},
+		success: function (data) {
+			if (data.code) {
+				window.location.href = "/admin/admin_system";
+			}
+		},
+		error: function (xhr, status, error) {
+			let data = xhr.responseJSON;
+
+			console.log(data);
+
+			if (!data.code) {
+				window.location.href = "/400";
+			}
+		},
+	});
+}

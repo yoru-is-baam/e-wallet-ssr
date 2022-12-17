@@ -273,20 +273,19 @@ let withdrawalValidation = async (
 	accountId,
 	cardNumber,
 	expirationDate,
-	cvv
+	cvv,
+	withdrawalMoney
 ) => {
 	try {
-		let withdrawalCount = await db.getWithdrawalCount(accountId);
 		let withdrawalTime = await db.getWithdrawalTime(accountId);
 
-		if (withdrawalCount === "" || withdrawalTime === "") {
+		if (withdrawalTime === "") {
 			return "";
 		}
 
 		const WITHDRAWAL_COUNT_ALLOW = 2;
 		const ONE_DAY_MILLISECOND = 8.64e7;
-		let IS_ENOUGH_24_HOURS =
-			Date.now() - withdrawalTime === ONE_DAY_MILLISECOND;
+		let IS_ENOUGH_24_HOURS = Date.now() - withdrawalTime >= ONE_DAY_MILLISECOND;
 
 		if (IS_ENOUGH_24_HOURS) {
 			let isRestoredWithdrawalCount = await db.restoreWithdrawalCount(
@@ -298,8 +297,18 @@ let withdrawalValidation = async (
 			}
 		}
 
-		if (withdrawalCount > WITHDRAWAL_COUNT_ALLOW) {
+		let withdrawalCount = await db.getWithdrawalCount(accountId);
+		if (withdrawalCount === "") {
+			return "";
+		} else if (withdrawalCount >= WITHDRAWAL_COUNT_ALLOW) {
 			return "You can just withdraw 2 times/1 day";
+		}
+
+		let balance = await db.getBalance(accountId);
+		if (balance === "") {
+			return "";
+		} else if (balance < parseInt(withdrawalMoney)) {
+			return "Account does not have enough money to withdraw";
 		}
 
 		let card = await Card.findOne({ cardNumber: cardNumber });

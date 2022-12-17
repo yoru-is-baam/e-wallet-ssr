@@ -331,9 +331,12 @@ i.center {
 		content: "Transaction type";
 	}
 	.content__history td:nth-of-type(2):before {
-		content: "Total transaction";
+		content: "Total money";
 	}
 	.content__history td:nth-of-type(3):before {
+		content: "Status";
+	}
+	.content__history td:nth-of-type(4):before {
 		content: "See detail";
 	}
 
@@ -427,15 +430,9 @@ i.center {
 		content: "Transaction type";
 	}
 	.content__recent--history td:nth-of-type(2):before {
-		content: "Fee";
+		content: "Total transaction";
 	}
 	.content__recent--history td:nth-of-type(3):before {
-		content: "Execution time";
-	}
-	.content__recent--history td:nth-of-type(4):before {
-		content: "Status";
-	}
-	.content__recent--history td:nth-of-type(5):before {
 		content: "See detail";
 	}
 
@@ -474,5 +471,30 @@ i.center {
 	}
 	.content__transfer--over5m td:nth-of-type(6):before {
 		content: "Approve this account";
+	}
+
+	/* admin responsive */
+	.admin__waiting td:nth-of-type(1):before {
+		content: "Waiting accounts";
+	}
+
+	.admin__actived td:nth-of-type(1):before {
+		content: "Actived accounts";
+	}
+
+	.admin__locked td:nth-of-type(1):before {
+		content: "Locked accounts";
+	}
+
+	.admin__withdrawOver5m td:nth-of-type(1):before {
+		content: "Withdraw over 5M";
+	}
+
+	.admin__transferOver5m td:nth-of-type(1):before {
+		content: "Transfer over 5M";
+	}
+
+	.admin__disabled td:nth-of-type(1):before {
+		content: "Disabled accounts";
 	}
 }

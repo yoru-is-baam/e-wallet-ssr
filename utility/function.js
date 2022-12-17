@@ -60,10 +60,15 @@ function formatCurrency(money) {
 	return money.toLocaleString("it-IT", { style: "currency", currency: "VND" });
 }
 
+function calculateFee(money) {
+	return (money * 5) / 100;
+}
+
 module.exports = {
 	uploadId,
 	generateRandomString,
 	removeUploadId,
 	formatCurrency,
 	generateOtp,
+	calculateFee,
 };
