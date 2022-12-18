@@ -7,6 +7,9 @@ const RechargeHistory = require("../models/rechargeHistory");
 const WithdrawalHistory = require("../models/withdrawalHistory");
 const TransferHistory = require("../models/transferHistory");
 
+const moment = require("moment-timezone");
+const dateAsia = moment.tz(Date.now(), "Asia/Bangkok");
+
 require("dotenv").config();
 
 // config send mail
@@ -887,6 +890,9 @@ async function addTransferHistory(
 			money: transferMoney,
 			sidePayFee: sidePayFee,
 			fee: fee,
+			otp: fn.generateOtp(6),
+			time: Date.now(),
+			date: dateAsia.toString(),
 			status: "Typing OTP",
 		});
 

@@ -1,7 +1,4 @@
 var mongoose = require("mongoose");
-var fn = require("../utility/function");
-const moment = require("moment-timezone");
-const dateAsia = moment.tz(Date.now(), "Asia/Bangkok");
 
 var transferHistorySchema = mongoose.Schema({
 	recipientPhone: {
@@ -31,7 +28,6 @@ var transferHistorySchema = mongoose.Schema({
 	otp: {
 		type: Number,
 		required: true,
-		default: fn.generateOtp(6),
 	},
 	status: {
 		type: String,
@@ -40,12 +36,10 @@ var transferHistorySchema = mongoose.Schema({
 	time: {
 		type: Date,
 		required: true,
-		default: Date.now(),
 	},
 	date: {
 		type: String,
 		required: true,
-		default: dateAsia.toString(),
 	},
 });
 
