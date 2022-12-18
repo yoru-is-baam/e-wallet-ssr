@@ -155,6 +155,10 @@ router.post("/withdrawal", async (req, res) => {
 
 // transfer
 router.get("/transfer", validate.redirectLogin, (req, res) => {
+	if (req.session.transferHistory) {
+		delete req.session.transferHistory;
+	}
+
 	return res.status(200).render("transfer", { title: "Transfer" });
 });
 
