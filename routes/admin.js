@@ -101,6 +101,20 @@ router.get(
 	}
 );
 
+// disabled account
+router.get("/disable_account/:userId", validate.adminOnly, async (req, res) => {
+	let user = await db.getUser(req.params.userId);
+
+	if (user === "") {
+		return res.redirect(302, "/400");
+	}
+
+	return res.status(200).render("./admin/disable_account", {
+		title: "Disabled user",
+		user: user,
+	});
+});
+
 // withdrawal over 5m
 router.get(
 	"/withdraw_over_5m/:accountId",

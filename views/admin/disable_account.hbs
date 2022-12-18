@@ -1,0 +1,12 @@
+<div class="container">
+  <h2 class="text-center text-light mt-2">User Information</h2>
+  <div class="row justify-content-center">
+    <div class="col-md-6 border p-3 rounded bg-light mb-3">
+      {{> profile_img}}
+      <h5 class="mt-2 ml-4">
+        <i class="fas fa-dot-circle mr-3 center"></i>Disabled Account
+      </h5>
+      {{> user_detail_information name=user.name birth=user.birth email=user.email address=user.address phone=user.phone idFrontPath=user.idFrontPath idBackPath=user.idBackPath}}
+    </div>
+  </div>
+</div>

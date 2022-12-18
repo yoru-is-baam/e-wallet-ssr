@@ -121,7 +121,7 @@ let redirectNotVerifyAccount = async (req, res, next) => {
 		} else if (status === "Wait update") {
 			return res.redirect(302, "/users/update_id");
 		} else if (status === "Disabled") {
-			return res.redirect(302, "/users/login");
+			return res.redirect(302, "/users/logout");
 		}
 	}
 };
