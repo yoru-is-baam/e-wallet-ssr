@@ -5,24 +5,16 @@ var transferHistorySchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	note: {
-		type: String,
-		required: true,
-	},
-	accountId: {
-		type: String,
-		required: true,
-	},
 	money: {
-		type: Number,
-		required: true,
-	},
-	fee: {
 		type: Number,
 		required: true,
 	},
 	sidePayFee: {
 		type: String,
+		required: true,
+	},
+	fee: {
+		type: Number,
 		required: true,
 	},
 	otp: {
@@ -38,6 +30,14 @@ var transferHistorySchema = mongoose.Schema({
 		required: true,
 	},
 	date: {
+		type: String,
+		required: true,
+	},
+	note: {
+		type: String,
+		required: true,
+	},
+	accountId: {
 		type: String,
 		required: true,
 	},

@@ -1083,6 +1083,23 @@ async function startingTransfer(transferHistoryId) {
 	return true;
 }
 
+async function getTransferHistories(accountId) {
+	try {
+		let transferHistories = await TransferHistory.find({
+			accountId: accountId,
+		});
+
+		if (transferHistories) {
+			return transferHistories;
+		}
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+
+	return "";
+}
+
 module.exports = {
 	addUser,
 	addAccount,
@@ -1115,4 +1132,5 @@ module.exports = {
 	getTransferHistory,
 	rejectTransfer,
 	startingTransfer,
+	getTransferHistories,
 };

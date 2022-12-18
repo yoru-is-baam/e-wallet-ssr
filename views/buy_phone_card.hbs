@@ -1,0 +1,31 @@
+{{> header}}
+<div class="container-fluid">
+  <div class="row navi">
+    <div class="col-lg-3">
+      {{> menu}}
+    </div>
+    <div class="col-lg-9">
+      <div class="content">
+        <!-- Buy phone card -->
+        <div class="content__buy-phone-card bg-dark rounded p-4 text-light">
+          <h2>Buy Phone Card</h2>
+          <div class="content__phone-card">
+            <input class="pc-item" type="radio" id="10k" name="phoneCard" value="10k" checked />10.000đ
+            <input class="pc-item" type="radio" id="20k" name="phoneCard" value="20k" />20.000đ
+            <input class="pc-item" type="radio" id="50k" name="phoneCard" value="50k" />50.000đ
+            <input class="pc-item" type="radio" id="100k" name="phoneCard" value="100k" />100.000đ
+          </div>
+          <div class="content__phone-card">
+            <input class="pc-item" type="radio" id="viettel" name="phoneCardType" value="Viettel" checked />Viettel
+            <input class="pc-item" type="radio" id="mobiphone" name="phoneCardType" value="Mobiphone" />Mobiphone
+            <input class="pc-item" type="radio" id="vinaphone" name="phoneCardType" value="Vinaphone" />Vinaphone
+          </div>
+          <div>
+            <a href="#" class="btn btn-success mt-4" type="submit">Buy Card</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{> menu_responsive}}
+</div>

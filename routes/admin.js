@@ -144,6 +144,13 @@ router.post("/confirm_withdrawal", async (req, res) => {
 	return res.status(200).json({ code: 1, msg: "Success" });
 });
 
+// transfer over 5m
+router.get("/transfer_over_5m", validate.adminOnly, (req, res) => {
+	return res
+		.status(200)
+		.render("transfer_over_5m", { title: "Transfer over 5m" });
+});
+
 // recent transactions
 
 module.exports = router;

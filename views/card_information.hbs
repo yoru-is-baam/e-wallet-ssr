@@ -1,0 +1,46 @@
+{{> header}}
+<div class="container-fluid">
+  <div class="row navi">
+    <div class="col-lg-3">
+      {{> menu}}
+    </div>
+    <div class="col-lg-9">
+      <div class="content">
+        <!-- Phone card information -->
+        <div class="content__phone-card-infor text-center">
+            <h2 class="text-center text-light mt-4">Your phone card information</h2>
+            <table class="table text-light">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Card Code</th>
+                        <th scope="col">Fee</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Card Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>1111112345</td>
+                        <td>0đ</td>
+                        <td>10.000đ</td>
+                        <td>Viettel</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>2222212345</td>
+                        <td>0đ</td>
+                        <td>10.000đ</td>
+                        <td>Mobifone</td>
+                    </tr>
+                </tbody>
+            </table>
+            <a href="/transaction_history" class="btn btn-light"><i class="fas fa-arrow-left"></i>
+                Go back
+            </a>
+        </div>
+    </div>
+  </div>
+  {{> menu_responsive}}
+</div>

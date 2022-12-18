@@ -273,6 +273,16 @@ router.post("/otp_transfer", async (req, res) => {
 });
 
 // buy phone card
+router.get("/buy_phone_card", validate.redirectLogin, (req, res) => {
+	return res.status(200).render("buy_phone_card", { title: "Buy phone card" });
+});
+
+// card information
+router.get("/card_information", validate.redirectLogin, (req, res) => {
+	return res
+		.status(200)
+		.render("card_information", { title: "Card information" });
+});
 
 // transaction history
 router.get("/transaction_history", validate.redirectLogin, (req, res) => {
@@ -310,6 +320,22 @@ router.get("/withdrawal_history", validate.redirectLogin, async (req, res) => {
 	return res.status(200).render("withdrawal_history", {
 		title: "Withdrawal History",
 		withdrawalHistories: withdrawalHistories,
+	});
+});
+
+// transfer history
+router.get("/transfer_history", validate.redirectLogin, async (req, res) => {
+	let transferHistories = await db.getTransferHistories(
+		req.session.account.accountId
+	);
+
+	if (transferHistories === "") {
+		return res.redirect(302, "/400");
+	}
+
+	return res.status(200).render("transfer_history", {
+		title: "Transfer History",
+		transferHistories: transferHistories,
 	});
 });
 

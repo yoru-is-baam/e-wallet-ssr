@@ -1,0 +1,46 @@
+{{> header}}
+<div class="container-fluid">
+  <div class="row navi">
+    <div class="col-lg-3">
+      {{> menu}}
+    </div>
+    <div class="col-lg-9">
+      <div class="content">
+        <!-- Transfer History -->
+        <div class="content__history--transfer text-center">
+          <h2 class="text-center text-light mt-4">Transfer history</h2>
+          <table class="table text-light">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Transfer ID</th>
+                <th scope="col">Recipient Phone</th>
+                <th scope="col">Money</th>
+                <th scope="col">Side pay fee</th>
+                <th scope="col">Fee</th>
+                <th scope="col">Status</th>
+                <th scope="col">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each transferHistories}}
+              <tr>
+                <td scope="row">{{_id}}</td>
+                <td>{{recipientPhone}}</td>
+                <td>{{formatCurrency money}}</td>
+                <td>{{sidePayFee}}</td>
+                <td>{{formatCurrency fee}}</td>
+                <td>{{status}}</td>
+                <td>{{date}}</td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+          <a href="/transaction_history" class="btn btn-light"><i class="fas fa-arrow-left"></i>
+            Go back
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{> menu_responsive}}
+</div>
