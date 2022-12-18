@@ -628,6 +628,62 @@ async function subtractBalance(accountId, subtractMoney) {
 	return false;
 }
 
+async function subtractBalanceNoFee(accountId, subtractMoney) {
+	try {
+		let currBalance = await getBalance(accountId);
+
+		if (currBalance === "") {
+			return false;
+		}
+
+		let balance = currBalance - parseInt(subtractMoney);
+
+		let account = await Account.findByIdAndUpdate(
+			{
+				_id: new mongoose.Types.ObjectId(accountId),
+			},
+			{ balance: balance }
+		);
+
+		if (account) {
+			return true;
+		}
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return false;
+}
+
+async function subtractBalanceJustFee(accountId, fee) {
+	try {
+		let currBalance = await getBalance(accountId);
+
+		if (currBalance === "") {
+			return false;
+		}
+
+		let balance = currBalance - parseInt(fee);
+
+		let account = await Account.findByIdAndUpdate(
+			{
+				_id: new mongoose.Types.ObjectId(accountId),
+			},
+			{ balance: balance }
+		);
+
+		if (account) {
+			return true;
+		}
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return false;
+}
+
 async function updateWithdrawalCount(accountId) {
 	try {
 		let currWithdrawalCount = await getWithdrawalCount(accountId);
@@ -952,24 +1008,27 @@ async function startingTransfer(transferHistoryId) {
 				return false;
 			}
 
-			let totalMoney = transferMoney;
+			let isUpdatedBalanceSender = "";
 
-			if (sidePayFee === "sender") {
-				totalMoney = transferMoney + fee;
-			} else {
-				let isSubtractedFeeOfReceiver = await subtractBalance(
+			if (sidePayFee === "receiver") {
+				let isSubtractedFeeOfReceiver = await subtractBalanceJustFee(
 					accountIdRecipient,
 					fee
 				);
 				if (!isSubtractedFeeOfReceiver) {
 					return false;
 				}
-			}
 
-			let isUpdatedBalanceSender = await subtractBalance(
-				accountIdSender,
-				totalMoney
-			);
+				isUpdatedBalanceSender = await subtractBalanceNoFee(
+					accountIdSender,
+					transferMoney
+				);
+			} else {
+				isUpdatedBalanceSender = await subtractBalance(
+					accountIdSender,
+					transferMoney
+				);
+			}
 
 			if (isUpdatedBalanceSender) {
 				let isUpdatedBalanceReceiver = await updateBalance(

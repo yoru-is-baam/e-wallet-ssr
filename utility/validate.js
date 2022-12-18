@@ -407,9 +407,6 @@ let otpTransferValidation = async (otp, transferHistoryId) => {
 		// because send mail too long so we set 1 minute = 90000 ms
 		const ONE_MINUTE_IN_MILLISECOND = 90000;
 		let otpInTransferHistory = transferHistory.otp;
-		console.log(Date.now());
-		console.log(transferHistory.time);
-		console.log(Date.now() - transferHistory.time);
 		let IS_GREATER_1_MINUTE =
 			Date.now() - transferHistory.time > ONE_MINUTE_IN_MILLISECOND;
 
