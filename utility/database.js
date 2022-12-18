@@ -45,6 +45,7 @@ async function addUser(fields, files) {
 			address: fields.address,
 			idFrontPath: idFrontPath,
 			idBackPath: idBackPath,
+			otp: fn.generateOtp(6),
 		});
 
 		data = await user.save();
@@ -70,6 +71,7 @@ async function addAccount(userInfo) {
 			username: username,
 			password: hashedPass,
 			userId: userInfo._id,
+			withdrawalTime: Date.now(),
 		});
 
 		if (sendMail(userInfo.email, username, password)) {
@@ -713,6 +715,7 @@ async function addRechargeHistory(accountId, cardNumber, money) {
 			accountId: accountId,
 			cardNumber: cardNumber,
 			money: money,
+			date: dateAsia.toString(),
 		});
 
 		let isAdded = await rechargeHistory.save();
@@ -740,6 +743,7 @@ async function addWithdrawalHistory(accountId, cardNumber, money, note) {
 			note: note,
 			fee: fee,
 			status: status,
+			date: dateAsia.toString(),
 		});
 
 		let isAdded = await withdrawalHistory.save();
