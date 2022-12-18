@@ -191,11 +191,13 @@ router.post("/transfer", async (req, res) => {
 		note
 	);
 
-	if (typeof isAddedTransferHistory === "string") {
+	// isAddedTransferHistory contains transfer history's ObjectId
+	if (typeof isAddedTransferHistory === "object") {
 		req.session.transferHistory = {
 			transferHistoryId: isAddedTransferHistory,
 			recipientPhone: phone,
 		};
+
 		return res.redirect(302, "/otp_transfer");
 	} else {
 		return res.redirect(302, "/400");
@@ -204,6 +206,7 @@ router.post("/transfer", async (req, res) => {
 
 // otp transfer
 router.get("/otp_transfer", validate.redirectLogin, async (req, res) => {
+	// Exceed 1 minute but user do again submit then redirect
 	if (!req.session.transferHistory) {
 		return res.redirect(302, "/home");
 	}
@@ -224,6 +227,10 @@ router.get("/otp_transfer", validate.redirectLogin, async (req, res) => {
 });
 
 router.post("/otp_transfer", async (req, res) => {
+	if (!req.session.transferHistory) {
+		return res.redirect(302, "/home");
+	}
+
 	let otp = req.body.otp;
 	let transferHistoryId = req.session.transferHistory.transferHistoryId;
 
@@ -232,15 +239,33 @@ router.post("/otp_transfer", async (req, res) => {
 		transferHistoryId
 	);
 	if (otpTransferValidationStr === "") {
+		delete req.session.transferHistory;
 		return res.redirect(302, "/400");
-	} else if (otpTransferValidationStr != "OK") {
+	} else if (otpTransferValidationStr !== "OK") {
+		if (
+			otpTransferValidationStr ===
+			"Your time exceeds 1 minutes. You can not do this transfer"
+		) {
+			delete req.session.transferHistory;
+		}
+
+		let transferHistory = await db.getTransferHistory(transferHistoryId);
+		let user = await db.getUserByPhone(transferHistory.recipientPhone);
+
 		return res.status(400).render("otp_transfer", {
 			title: "OTP transfer",
 			error: otpTransferValidationStr,
+			recipientName: user.name,
 		});
 	}
 
-	return res.redirect(302, "/home");
+	let isTransfer = await db.startingTransfer(transferHistoryId);
+
+	if (isTransfer) {
+		return res.redirect(302, "/home");
+	}
+
+	return res.redirect(302, "/400");
 });
 
 // buy phone card
@@ -286,6 +311,7 @@ router.get("/withdrawal_history", validate.redirectLogin, async (req, res) => {
 
 // 400
 router.get("/400", (req, res) => {
+	req.session.destroy();
 	return res.status(400).render("400", { title: "400 Bad Request" });
 });
 

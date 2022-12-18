@@ -8,30 +8,6 @@ const db = require("./database");
 const adminDb = require("./admin_db");
 const fn = require("./function");
 
-let validateRegisterUser = () => {
-	return [
-		body(name, "Name must be at least 5 characters").isLength({ min: 5 }),
-		body(email, "You have entered an invalid email address!").isEmail(),
-		body(email, "Already have this email").custom((value) => {
-			User.findOne({ email: value }).then((user) => {
-				if (user) {
-					return;
-				}
-			});
-		}),
-		body(phone, "Mobile phone must be at least 10 numbers").isMobilePhone(),
-		body(phone, "Already have this phone number").custom((value) => {
-			User.findOne({ phone: value }).then((user) => {
-				if (user) {
-					return;
-				}
-			});
-		}),
-		body(address, "Please do not leave blank address").isEmpty(),
-		body(address, "Invalid birthday").isISO8601("yyyy-mm-dd"),
-	];
-};
-
 let validateLoginUser = [
 	body("username", "Name must be at least 10 characters").isLength({
 		min: 10,
@@ -370,7 +346,7 @@ let transferValidation = async (
 				return "Receiver does not have enough money to pay fee";
 			}
 		} else {
-			if (accountSender.balance < transferMoney + fee) {
+			if (accountSender.balance < parseInt(transferMoney) + fee) {
 				return "Do not have enough money to pay fee";
 			}
 		}
@@ -428,8 +404,12 @@ let otpTransferValidation = async (otp, transferHistoryId) => {
 			return "";
 		}
 
-		const ONE_MINUTE_IN_MILLISECOND = 60000;
+		// because send mail too long so we set 1 minute = 90000 ms
+		const ONE_MINUTE_IN_MILLISECOND = 90000;
 		let otpInTransferHistory = transferHistory.otp;
+		console.log(Date.now());
+		console.log(transferHistory.time);
+		console.log(Date.now() - transferHistory.time);
 		let IS_GREATER_1_MINUTE =
 			Date.now() - transferHistory.time > ONE_MINUTE_IN_MILLISECOND;
 
@@ -444,7 +424,7 @@ let otpTransferValidation = async (otp, transferHistoryId) => {
 			return "";
 		}
 
-		if (otp !== otpInTransferHistory) {
+		if (parseInt(otp) !== otpInTransferHistory) {
 			return "Wrong otp";
 		}
 	} catch (error) {
@@ -452,12 +432,11 @@ let otpTransferValidation = async (otp, transferHistoryId) => {
 		return "";
 	}
 
-	return "";
+	return "OK";
 };
 
 let validate = {
 	validateLoginUser: validateLoginUser,
-	validateRegisterUser: validateRegisterUser,
 	loginValidationDB: loginValidationDB,
 	registerValidationDB: registerValidationDB,
 	rechargeCardValidation: rechargeCardValidation,

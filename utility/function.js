@@ -61,7 +61,7 @@ function formatCurrency(money) {
 }
 
 function calculateFee(money) {
-	return (money * 5) / 100;
+	return parseInt((money * 5) / 100);
 }
 
 module.exports = {

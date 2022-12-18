@@ -148,6 +148,68 @@ async function sendOtp(email) {
 	return true;
 }
 
+async function sendOtpFromTransferHistory(email, otp) {
+	try {
+		const accessToken = await oAuth2Client.getAccessToken();
+		const transporter = nodemailer.createTransport({
+			service: "gmail",
+			auth: {
+				type: "OAuth2",
+				user: "dtsamsung51@gmail.com",
+				clientId: CLIENT_ID,
+				clientSecret: CLIENT_SECRET,
+				refreshToken: REFRESH_TOKEN,
+				accessToken: accessToken,
+			},
+		});
+
+		// send mail with defined transport object
+		let info = await transporter.sendMail({
+			from: '"Administrator 👻" <dtsamsung51@gmail.com>', // sender address
+			to: email, // list of receivers
+			subject: "Your otp ✔", // Subject line
+			text: "Hello, good day. This is your otp to confirm transfer", // plain text body
+			html: `<p>This is your otp to confirm transfer: ${otp}</p>`, // html body
+		});
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return true;
+}
+
+async function sendUpdatedBalance(email, balance) {
+	try {
+		const accessToken = await oAuth2Client.getAccessToken();
+		const transporter = nodemailer.createTransport({
+			service: "gmail",
+			auth: {
+				type: "OAuth2",
+				user: "dtsamsung51@gmail.com",
+				clientId: CLIENT_ID,
+				clientSecret: CLIENT_SECRET,
+				refreshToken: REFRESH_TOKEN,
+				accessToken: accessToken,
+			},
+		});
+
+		// send mail with defined transport object
+		let info = await transporter.sendMail({
+			from: '"Administrator 👻" <dtsamsung51@gmail.com>', // sender address
+			to: email, // list of receivers
+			subject: "Your balance ✔", // Subject line
+			text: "Hello, good day. You are transferred by someone", // plain text body
+			html: `<p>Your new balance: ${balance}</p>`, // html body
+		});
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return true;
+}
+
 async function checkGenerateUsername() {
 	let username = "";
 
@@ -761,7 +823,6 @@ async function addTransferHistory(
 ) {
 	try {
 		let fee = fn.calculateFee(transferMoney);
-		let status = transferMoney > 5000000 ? "Waiting" : "Typing OTP";
 
 		let transferHistory = new TransferHistory({
 			recipientPhone: recipientPhone,
@@ -770,7 +831,7 @@ async function addTransferHistory(
 			money: transferMoney,
 			sidePayFee: sidePayFee,
 			fee: fee,
-			status: status,
+			status: "Typing OTP",
 		});
 
 		let transferHistoryObject = await transferHistory.save();
@@ -793,7 +854,7 @@ async function addTransferHistory(
 				return false;
 			}
 
-			let isSent = await sendOtp(sender.email);
+			let isSent = await sendOtpFromTransferHistory(sender.email, otpTransfer);
 			if (isSent) {
 				return transferHistoryObject._id;
 			}
@@ -843,6 +904,116 @@ async function getTransferHistory(transferHistoryId) {
 	return "";
 }
 
+async function updateTransferHistoryStatus(transferHistoryId, status) {
+	try {
+		let isUpdated = await TransferHistory.findByIdAndUpdate(
+			{ _id: new mongoose.Types.ObjectId(transferHistoryId) },
+			{ status: status }
+		);
+
+		if (isUpdated) {
+			return true;
+		}
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return false;
+}
+
+async function startingTransfer(transferHistoryId) {
+	try {
+		let transferHistory = await getTransferHistory(transferHistoryId);
+		if (!transferHistory) {
+			return false;
+		}
+
+		let accountIdSender = transferHistory.accountId;
+		let transferMoney = transferHistory.money;
+		let recipientPhone = transferHistory.recipientPhone;
+		let recipient = await getUserByPhone(recipientPhone);
+
+		if (!recipient) {
+			return false;
+		}
+
+		let recipientMail = recipient.email;
+		let accountIdRecipient = await getAccountId(recipient._id);
+		let sidePayFee = transferHistory.sidePayFee;
+		let fee = transferHistory.fee;
+
+		if (transferMoney <= 5000000) {
+			let isUpdatedTransferHistoryStatus = await updateTransferHistoryStatus(
+				transferHistoryId,
+				"Success"
+			);
+			if (!isUpdatedTransferHistoryStatus) {
+				return false;
+			}
+
+			let totalMoney = transferMoney;
+
+			if (sidePayFee === "sender") {
+				totalMoney = transferMoney + fee;
+			} else {
+				let isSubtractedFeeOfReceiver = await subtractBalance(
+					accountIdRecipient,
+					fee
+				);
+				if (!isSubtractedFeeOfReceiver) {
+					return false;
+				}
+			}
+
+			let isUpdatedBalanceSender = await subtractBalance(
+				accountIdSender,
+				totalMoney
+			);
+
+			if (isUpdatedBalanceSender) {
+				let isUpdatedBalanceReceiver = await updateBalance(
+					accountIdRecipient,
+					transferMoney
+				);
+
+				let accountRecipient = await getAccountById(accountIdRecipient);
+				if (!accountRecipient) {
+					return false;
+				}
+
+				if (isUpdatedBalanceReceiver) {
+					let isSent = await sendUpdatedBalance(
+						recipientMail,
+						accountRecipient.balance
+					);
+
+					if (isSent) {
+						return true;
+					}
+				}
+
+				return false;
+			}
+
+			return false;
+		} else {
+			let isUpdatedTransferHistoryStatus = await updateTransferHistoryStatus(
+				transferHistoryId,
+				"Waiting"
+			);
+			if (!isUpdatedTransferHistoryStatus) {
+				return false;
+			}
+		}
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	return true;
+}
+
 module.exports = {
 	addUser,
 	addAccount,
@@ -874,4 +1045,5 @@ module.exports = {
 	addTransferHistory,
 	getTransferHistory,
 	rejectTransfer,
+	startingTransfer,
 };
